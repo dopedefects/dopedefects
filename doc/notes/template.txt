@@ -1,0 +1,16 @@
+Example doc string:
+
+def fxn_name(a):
+  """
+  fxn_name: computes the square of z
+
+  INPUTS
+  ------
+    a: Number to be squared
+
+  OUTPUTS
+  -------
+    square: Squared Numberr
+  """
+  square = a*a
+  return square
