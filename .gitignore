@@ -105,3 +105,4 @@ venv.bak/
 
 # Project data
 data/*
+dopedefects/data/*
