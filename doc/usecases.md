@@ -1,10 +1,10 @@
-### Main Use Case: 
+## Main Use Case: 
 Given a set of descriptors of an impurity, use a trained model to predict energy levels of the defect
 
-### Details:
-Analyze Best Descriptors from DFT calculations and use them to make predictions
+## Details:
+###Analyze Best Descriptors from DFT calculations and use them to make predictions
 
-#### Descriptors:
+##### Descriptors:
 1. Period	Group	Site
 2. Delta Ion. Rad.
 3. Delta Cov. Rad.
@@ -17,13 +17,13 @@ Analyze Best Descriptors from DFT calculations and use them to make predictions
 10. Number of Te Neighbors
 11. Corrected VBM (eV)
 12. Corrected CBM (eV)
+13. Others (to be explored e.g. atomic positions)
 
-#### Others (to be explored e.g. atomic positions)
-Properties of interest:
-Electronic levels within the band gap
-Defect formation enthalpies, ∆H
+##### Properties of interest:
+1. Electronic levels within the band gap
+2. Defect formation enthalpies, ∆H
 
-#### Program Specifics:
+### Program Specifics:
 - Uses command line interface
 - Should be python program
 - Should be able to read in data from csv file(s).
@@ -35,4 +35,4 @@ Defect formation enthalpies, ∆H
 - Should be able to predict properties based on latent space
 - (soft goal) Model to be trained with Gaussian progress regression
 
-![Usecases diagram](./usecases_diagram.png?raw=true)
+![Usecases diagram](./usecases_diagram.PNG?raw=true)
