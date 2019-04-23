@@ -2,8 +2,7 @@
 Given a set of descriptors of an impurity, use a trained model to predict energy levels of the defect
 
 ## Details:
-###Analyze Best Descriptors from DFT calculations and use them to make predictions
-
+### Analyze Best Descriptors from DFT calculations and use them to make predictions
 ##### Descriptors:
 1. Period	Group	Site
 2. Delta Ion. Rad.
@@ -22,6 +21,7 @@ Given a set of descriptors of an impurity, use a trained model to predict energy
 ##### Properties of interest:
 1. Electronic levels within the band gap
 2. Defect formation enthalpies, ∆H
+
 
 ### Program Specifics:
 - Uses command line interface
