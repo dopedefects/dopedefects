@@ -21,8 +21,8 @@ def find_files(data_dir):
     poscar = []
     for root, dirs, files in os.walk(data_dir):
         list_file_path = os.path.join(root, 'POSCAR')
-      if os.path.isfile(list_file_path):
-          poscar.append(list_file_path)
+        if os.path.isfile(list_file_path):
+            poscar.append(list_file_path)
     assert len(poscar) > 0, 'No POSCAR files found in %s.' %data_dir
     return poscar
 
@@ -151,7 +151,6 @@ def angle_between(a, b):
     b_u = unit_vector(b)
     return np.rad2deg(np.arccos(np.clip(np.dot(a_u, b_u), -1.0, 1.0)))
 
-
 def direct_to_cart(direct, vectors):
     """
     Given the direct coordinates, transform into cartesian
@@ -159,6 +158,7 @@ def direct_to_cart(direct, vectors):
     Inputs
     ------
     direct    : numpy matrix containing the direct coordinates
+        np.square(vectors[0,2]))
     vectors   : numpy matrix containing the a, b, and c unit cell
                 vectors
 
@@ -178,7 +178,7 @@ def direct_to_cart(direct, vectors):
         np.square(np.cos(gamma)) + 2 * np.cos(alpha) * np.cos(beta) *\
         np.cos(gamma)))
 
-    #flip to do matrix multiplication through numpy
+    #transpose to do matrix multiplication through numpy
     direct = np.transpose(direct)
 
     mult = np.asmatrix([[a, b * np.cos(gamma), c * np.cos(beta)],\
@@ -188,26 +188,54 @@ def direct_to_cart(direct, vectors):
 
     xyz = mult.dot(direct)
 
-    #flip so is easier to parse
+    #transpose so is easier to parse
     return np.transpose(xyz)
 
+def dist_between(xyz1, xyz2):
+    """
+    Determine the distance between two points in cartesian space
 
-def determine_closest_atoms(number, defect, xyz):
+    Inputs
+    ------
+    xyz1: list array of doubles containing the coordinates of the first point.
+    xyz2: list of doubles containing the coordinates of the second point.
+
+    Outputs
+    -------
+    double value of the distance between the two points.
+    """
+    xyz1 = np.asarray(xyz1)
+    xyz2 = np.asarray(xyz2)
+    return np.sqrt(np.sum((xyz1-xyz2)) ** 2)
+
+def determine_closest_atoms(number, defect, xyz, types):
     """
     Determine the atoms closest to the defect
+        np.square(vectors[0,2]))
 
     Inputs
     ------
     number :    int declaring how many surrounding atoms to use
     defect :    list containing xyz coords for the defect atom
     xyz    :    list containing xyz coordinates for all atoms
+    types  :    list containing the atom types (in order of the coords)
 
     Outputs
     -------
-
+    numpy array containing the distance, the cartesian coord., and 
+    the type of atom.
     """
+    AtmList = np.asmatrix([[0, [0,0,0], 'A'] for x in range(len(xyz))])
+    for i, coord in enumerate(xyz):
+        AtmList[i,0] = dist = dist_between(defect, coord)
+        AtmList[i,1] = coord
+        AtmList[i,2] = types[i]
+    AtmList.sort(axis=0)
 
-def atom_angles(defect, xyz):
+    #Return first number, skipping the 1st value, presuming is defect
+    return AtmList[1:number+1]
+
+def atom_angles(defect, xyz, types):
     """
     Determine angles around the defect coordinate.
 
@@ -219,11 +247,22 @@ def atom_angles(defect, xyz):
     
     Outputs
     -------
-    angles:   list containing the angles for the atoms around the
+    angles:   numpy array containing the angles for the atoms around the
               defect
     """
+    angles = []
+    for i in range(len(xyz)):
+        for j in range(i, len(xyz)):
+            if i == j:
+                continue
+            else:
+                center1 = np.subtract(xyz[i], defect)
+                center2 = np.subtract(xyz[j], defect)
+                angles.append(angle_between(center1, center2, types[i], \
+                    types[j]))
+    return np.asarray(angles)
 
-def geometry_defect(defect, poscar):
+def geometry_defect(number, defect, poscar):
     """
     Determine the Atom type for the closest several atoms (ratio and
     type), determine the bond lengths to the first several atoms around
@@ -238,18 +277,17 @@ def geometry_defect(defect, poscar):
 
     Output
     ------
-    atom_type:  dictionary containing the amounts of the surrounding
-                atom types.
-    bond_length:list containing the  'bond' length values for the first
-                8 surrounding atoms
-    bond_angle: list containing the the 'bond' angles for the first 8
-                surrounding atoms
+    bonds :     numpy array containing the bondlength, coordinates, and
+                atom type of the atoms surrounding the defect atom.
+    angles:     numpy array containing the angle, and types for the two
+                contained atoms surrounding the defect atom.
     """
     vectors     = []
     types       = []
     count       = []
     coord_type  = []
     coord       = []
+    atoms       = []
     with open(poscar, 'r') as fileIn:
         for i, line in enumerate(fileIn):
             if i > 2 and i < 5:
@@ -264,7 +302,7 @@ def geometry_defect(defect, poscar):
             if i == 8:
                 #coordinate type
                 coord_type = line
-            if i > 8 and i < 8 + sum(count)
+            if i > 8 and i < 8 + sum(count):
                 #coordinates
                 coord.append([float(_) for _ in line.split()[0:3]])
             if i > 8 + sum(count):
@@ -278,4 +316,19 @@ def geometry_defect(defect, poscar):
     else:
         coord = direct_to_cart(coord, vectors)
     
-   
+    #List of all the atom types in it
+    for i in len(types):
+        for j in range(int(count[i])):
+            atoms.append(types[i])
+    
+    #Determine which coord is the defect
+    defect_coord = coord[atoms.index(defect)]
+
+    #Determine bond lengths around the defect:
+    bonds = determine_closest_atoms(number, defect_coord, coord, atoms)
+
+    #Determine bond angles around the defect:
+    angles = atom_angles(defect_coord, bonds[:,1], bonds[:,2])
+
+    #Return:
+    return [bonds, angles]
