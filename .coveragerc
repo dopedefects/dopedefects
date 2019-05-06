@@ -1,0 +1,2 @@
+[run]
+omit = dopedefects/tests/*, dopedefects/version.py, dopedefects/__init__.py
