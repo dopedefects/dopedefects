@@ -160,7 +160,6 @@ def direct_to_cart(direct, vectors):
     Inputs
     ------
     direct    : numpy matrix containing the direct coordinates
-        np.square(vectors[0,2]))
     vectors   : numpy matrix containing the a, b, and c unit cell
                 vectors
 
