@@ -1,7 +1,7 @@
 """
 Helper functions to extract information from given POSCAR files
 """
-import numpy
+import numpy as np
 import os
 import sys
 
@@ -72,13 +72,15 @@ def id_crystal(poscar):
     #comparisons not set to 0 given it could be an impurity in crystal:
     if te_amount > 0 and se_amount < 2 and s_amount < 2:
         return 'cdte'
-    elif te_amount / se_amount > 0.4:
-        return 'cdtese'
+    elif se_amount > 0:
+        if te_amount / se_amount > 0.4:
+            return 'cdtese'
     
     if se_amount > 0 and te_amount < 2 and s_amount < 2:
         return 'cdse'
-    elif se_amount / s_amount > 0.4:
-        return 'cdses'
+    elif s_amount > 0:
+        if se_amount / s_amount > 0.4:
+          return 'cdses'
 
     if s_amount > 0 and te_amount < 2 and se_amount < 2:
         return 'cds'
@@ -115,7 +117,7 @@ def impurity_type(poscar):
     if min(count) > 5:
         return "pure"
     else:
-        return types.index(count.index(min(count)))
+        return types[count.index(min(count))]
 
 def unit_vector(vector):
     """

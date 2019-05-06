@@ -3,6 +3,7 @@ File for tests of the structure_extract.py file
 """
 
 import unittest
+import numpy as np
 import os
 
 import dopedefects.tests.context as context
@@ -116,7 +117,7 @@ class id_crystal(unittest.TestCase):
         Tests a POSCAR file containing a Cd/S crystal returns as cds
         """
         assert context.structure_extract.id_crystal(testing_dir + \
-            "/cds_crystal") == 'cdse', "Unable to identify a Cd/S crystal"
+            "/cds_crystal") == 'cds', "Unable to identify a Cd/S crystal"
         return
 
     def test_unknown_crystal(self):
@@ -197,7 +198,7 @@ class angle_between(unittest.TestCase):
         """
         Test a parallel angle
         """
-        assert np.isclose(context.structure_extract.angle_betwen([1,1,1], \
+        assert np.isclose(context.structure_extract.angle_between([1,1,1], \
             [2,2,2]), 0), "Parallel X angle not 0"
         return
 
@@ -206,7 +207,7 @@ class angle_between(unittest.TestCase):
         Test a 180 angle
         """
         assert np.isclose(context.structure_extract.angle_between([1,1,1], \
-            [2,2,-2]), 180), "Opposite angle not 180"
+            [-1,-1,-1]), 180), "Opposite angle not 180"
         return
 
 class direct_to_cart(unittest.TestCase):
