@@ -26,7 +26,7 @@ before_script:
 #  - "flake8 dopedefects"
 
 script:
-  - flake8 `find . -name \*.py | grep -v setup.py | grep -v version.py | grep -v __init__.py| grep -v /doc/ | grep -v /data/`
+  #- flake8 `find . -name \*.py | grep -v setup.py | grep -v version.py | grep -v __init__.py| grep -v /doc/ | grep -v /data/`
   - py.test -s --pyargs dopedefects --cov-report term-missing --cov=dopedefects --cov-config .coveragerc
 
 # generate a coverage report to send to back to user
