@@ -42,8 +42,9 @@ def build_pandas(data_dir, csvs):
             entry = data.loc[(data['CdX'] == crystal) & (data['M'] == dopant) & \
                 (data['Doping Site'] == site)].index[0]
         except:
-            raise Exception("Cannot open dataframe, ensure has proper column\
-                headings")
+            print("Cannot open dataframe entry for crystal %s, site %s, and \
+                dopant %s.  Please check .csv" %(crystal, site, dopant))
+            continue
         bonds, angles = structure_extract.geometry_defect(8, dopant, poscar)
         data.at[entry, "Bonds"] = bonds
         data.at[entry, "Angles"] = angles
