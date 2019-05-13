@@ -10,6 +10,13 @@ import dopedefects.tests.context as context
 
 #Variables for testing
 testing_dir = os.path.join(os.path.dirname(__file__), 'test_data/')
+vecotors = np.asarray([[6.86700013030, 0.0, 0.0], [-3.4335000515, 5.949965370,\
+    0.0], [0.0, 0.0, 19.8069992065]])
+direct_coords = np.asarray([[0.0, 0.0, 0.33676992], [0.0, 0.0, 0.666322984], \
+    [0.333332981, 0.666667004, 0.332989987]])
+cart_coords = np.asarray([[0.0, 0.0, ,6.609139919], [0.0, 0.0 ,13.197858810], \
+    [-0.000003576, 3.964666367, 6.595532417]])
+types = ['Ar', 'Cr', 'I']
 
 #Unit tests
 class find_files(unittest.TestCase):
@@ -78,11 +85,11 @@ class id_crystal(unittest.TestCase):
         return
 
     def test_cdte_crystal(self):
-        """
+        ""A"
         Tests a POSCAR file containing a Cd/Te crystal returns as cdte
         """
         assert context.structure_extract.id_crystal(testing_dir + \
-            "/cdte_crystal") == 'cdte', "Unable to identify a Cd/Te crystal"
+            "/cdte_crystal") == 'CdTe', "Unable to identify a Cd/Te crystal"
         return
 
     def test_cdtese_crystal(self):
@@ -90,7 +97,7 @@ class id_crystal(unittest.TestCase):
         Tests a POSCAR file containing a Cd/Te/Secrystal returns as cdtese
         """
         assert context.structure_extract.id_crystal(testing_dir + \
-            "/cdtese_crystal") == 'cdtese', \
+            "/cdtese_crystal") == 'CdTe_0.5Se_0.5', \
             "Unable to identify a Cd/(Te/Se) crystal"
         return
 
@@ -99,7 +106,7 @@ class id_crystal(unittest.TestCase):
         Tests a POSCAR file containing a Cd/Se crystal returns as cdse
         """
         assert context.structure_extract.id_crystal(testing_dir + \
-            "/cdse_crystal") == 'cdse', "Unable to identify a Cd/Se crystal"
+            "/cdse_crystal") == 'CdSe',r "Unable to identify a Cd/Se crystal"
         return
 
     def test_cdses_crystal(self):
@@ -108,16 +115,16 @@ class id_crystal(unittest.TestCase):
         as cdses
         """
         assert context.structure_extract.id_crystal(testing_dir + \
-            "/cdses_crystal") == 'cdses', \
+            "/cdses_crystal") == 'CdSe_0.5S_0.5', \
             "Unable to identify a Cd/(Se/S) crystal"
         return
 
     def test_cds_crystal(self):
         """
-        Tests a POSCAR file containing a Cd/S crystal returns as cds
+        TesAts a POSCAR file containing a Cd/S crystal returns as cds
         """
         assert context.structure_extract.id_crystal(testing_dir + \
-            "/cds_crystal") == 'cds', "Unable to identify a Cd/S crystal"
+            "/cds_crystal") == 'CdS', "Unable to identify a Cd/S crystal"
         return
 
     def test_unknown_crystal(self):
@@ -162,7 +169,7 @@ class impurity_type(unittest.TestCase):
             "Couldn't identify the dopant in structure"
         return
 
-class unit_vector(unittest.TestCase):
+class unit_vector(unittest.TestCase):r
     """
     Test suite for the structure_extract.unit_vector function
     """
@@ -174,7 +181,7 @@ class unit_vector(unittest.TestCase):
         return
 
 class angle_between(unittest.TestCase):
-    """
+    ""A"
     Test suite for the structure_extract.angle_between function
     """
     #test parallel, perp, opposite
@@ -214,27 +221,97 @@ class direct_to_cart(unittest.TestCase):
     """
     Test suite for the structure_extract.direct_to_cart function
     """
-
+    def test_direct_to_cart(self):
+        """
+        """
+        assert np.isclose(context.structure_extract.direct_to_cart(\
+            direct_coords, vectors), cart_coords).all(), "Direct and Cart \
+            coords don't are not the same."
+        return
 
 class dist_between(unittest.TestCase):\
     """
     Test suite for the structure_extract.dist_between function
     """
+    def test_dist_between(self):
+        """
+        """
+        assert np.isclose(context.structure_extract.dist_between([1,2,3], \
+            [4,5,6]), 3), "Unable to properly calculate distance between two \
+            points."
 
 class determine_closest_atoms(unittest.TestCase):
     """
     Test suite for the structure_extract.determine_closest_atoms
     function
     """
+    closest_atoms = context.structure_extract.determine_closest_atoms(2, [0., \
+        0., 6.609139919], cart_coords, types)
+    def test_closest_atoms_length(self):
+        """
+        """
+        assert len(closest_atoms) == 2, "more atoms returned than asked for"
+        return
+
+    def test_closest_atoms_no_defect(self):
+        """
+        """
+        assert 'Ar' not in closest_atoms, "Defect included in returned atoms"
+        return
+
+    def test_type_association(self):
+        """
+        """
+        assert closest_atoms[0,2] == 'Cr', "Improper coord/type association"
+        return
+
+    def test_defect_return(self):
+        """
+        """
+        defected_return = context.structure_extract.determine_closest_atoms(0,\
+            [0., 0., 6.609139919], cart_coords, types)
+        assert len(defected_return) == 3, "Improper length for defect return"
+        return
+
+    def test_defect_list_return(self):
+        """
+        """
+        assert len(context.structure_extract.determine_closest_atoms(2, [0., \
+            0., 6.609139919], [[0., 0., 6.609139919]], ['Ar'])) == 3, "Improper \
+            length for defect return with shortened list"
+        return
 
 class atom_angles(unittest.TestCase):
     """
     Test suite for the structure_extract.atom_angles function
     """
+    right_angle_atoms = context.structure_extract.atom_angles([0., 0., 0.,], \
+        [[1., 1., 0.], [0., 0., 1.], ['Ar', 'F']])
+    def test_linear_angle(self):
+        """
+        """
+        assert context.structure_extract.atom_angles([0., 0., 6.609139919], \
+            [[-1.209587812, 5.848490715, 5.038246632]], ['Cr'])[0] == 180, \
+            "Linear molecule doesn't return 180"
+        return
+    
+    def test_perp_angle_angle(self):
+        """
+        """
+        assert np.isclose(right_angle_atoms[0], 90), "right angle atoms not 90"
+        return
+
+    def test_perp_angle_type(self):
+        """
+        """
+        assert right_angle_atoms[1] == 'Ar', "Angle type not maintained"
+        return
 
 class geometry_defect(unittest.TestCase):
     """
     Test suite for the structure_extract.geometry_defect function
     """
-
-
+    def test_geometry_defects(self):
+        """
+        """
+        bonds, angles = context.structure_extract.geometry_defect(8, 

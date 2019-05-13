@@ -28,9 +28,7 @@ def coulomb(bond_length, defect):
                   matrix
     """
     #prepend the defect coord (so as to keep in order of bond length)
-    if len(defect) < 3:
-        defect = np.asarray([0.] + defect)
-    bond_length = np.insert(bond_length, 0, defect)
+    bond_length = [defect] + bond_length
 
     #initialize coloumb matrix
     coulomb = np.zeros(shape=(len(bond_length), len(bond_length)), dtype=float)
@@ -41,11 +39,12 @@ def coulomb(bond_length, defect):
             if j < i:
                 continue
             elif i == j:
-                coulomb[i,i] = 0.5 * np.power(bond_length[i,2], 2.4)
+                coulomb[i,i] = 0.5 * np.power(atomic_table.atomic_weight(\
+                    bond_length[i][2])[0], 2.4)
             else:
-                coulomb[i,j] = (atomic_table.atomic_weight(bond_length[i,3]) *\
-                    atomic_talbe.atomic_weight(bond_length[j,3])) / (\
-                    np.absolute(bond_length[i, 2] - bond_length[j, 2]))
+                coulomb[i,j] = (atomic_table.atomic_weight(bond_length[i][2])[0]\
+                    * atomic_table.atomic_weight(bond_length[j][2])[0]) / (\
+                    np.absolute(bond_length[i][0] - bond_length[j][0]))
     return coulomb
                 
 
