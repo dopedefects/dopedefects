@@ -22,7 +22,11 @@ def find_files(data_dir):
     for root, dirs, files in os.walk(data_dir):
         list_file_path = os.path.join(root, 'POSCAR')
         if os.path.isfile(list_file_path):
-            poscar.append(list_file_path)
+            count = sum(1 for line in open(list_file_path))
+            if count > 0:
+                poscar.append(list_file_path)
+            else:
+                print("File %s empty, skipping" %list_file_path)
     assert len(poscar) > 0, 'No POSCAR files found in %s.' %data_dir
     return poscar
 
