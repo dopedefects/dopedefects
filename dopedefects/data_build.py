@@ -13,6 +13,8 @@ try:
 except:
     import dopedefects.structure_extract as structure_extract
     import dopedefects_structure_properties as structure_properties
+import sys
+import tables
 
 def init_pandas(data_dir, csvs):
     """
@@ -45,7 +47,13 @@ def build_pandas(data_dir, csvs):
             print("Cannot open dataframe entry for crystal %s, site %s, and \
                 dopant %s.  Please check .csv" %(crystal, site, dopant))
             continue
-        bonds, angles = structure_extract.geometry_defect(8, dopant, poscar)
+        try:
+            bonds, angles = structure_extract.geometry_defect(8, dopant, poscar)
+        except:
+            print("Error (",sys.exc_info()[0], ")  determining bonds and angles\
+                for crystal %s, site %s and dopant %s.  Please check POSCAR" \
+                %(crystal, site, dopant))
+            continue
         data.at[entry, "Bonds"] = bonds
         data.at[entry, "Angles"] = angles
         data.at[entry, "Coulomb"] = structure_properties.coulomb(bonds, \
@@ -55,9 +63,7 @@ def build_pandas(data_dir, csvs):
 def save_pandas(data, file_name):
     """
     """
-    data_file = h5.py.File(file_name, 'w')
-    data_file.create_dataset('data', data=data)
-    data_file.close()
+    data.to_hdf("file_name", 'data', data_columns=True)
     return
 
 def init_data(file_name, data_dir=None, csvs=None):
