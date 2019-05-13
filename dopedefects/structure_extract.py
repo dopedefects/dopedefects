@@ -136,23 +136,23 @@ def dopant_site(poscar):
     -------
     impurity type of the defect as defined by collaborators
     """
-    if 'M_Cd' in poscar:
+    if 'M_Cd/' in poscar:
         return 'M_Cd'
-    if 'M_S' in poscar:
+    if 'M_S/' in poscar:
         return 'M_S'
-    if 'M_Se' in poscar:
+    if 'M_Se/' in poscar:
         return 'M_Se'
-    if 'M_Te' in poscar:
+    if 'M_Te/' in poscar:
         return 'M_Te'
-    if 'M_i_Cd_site' in poscar:
+    if 'M_i_Cd_site/' in poscar:
         return 'M_i_Cd_site'
-    if 'M_i_S_site' in poscar:
+    if 'M_i_S_site/' in poscar:
         return 'M_i_S_site'
-    if 'M_i_Se_site' in poscar:
+    if 'M_i_Se_site/' in poscar:
         return 'M_i_Se_site'
-    if 'M_i_Te_site' in poscar:
+    if 'M_i_Te_site/' in poscar:
         return 'M_i_Te_site'
-    if 'M_i_other' in poscar:
+    if 'M_i_other/' in poscar: 
         return 'M_i_old'
     else:
         raise Exception("Unknown dopant site given by %s" %poscar)
@@ -337,6 +337,7 @@ def geometry_defect(number, defect, poscar):
     atoms       = []
     with open(poscar, 'r') as fileIn:
         i = -1
+        selective = 0
         for line in fileIn:
             i += 1
             if i >= 2 and i < 5:
@@ -348,9 +349,15 @@ def geometry_defect(number, defect, poscar):
             if i == 6:
                 #Atom counts
                 count = [int(_) for _ in line.split()]
-            if i == 7:
+            if i == 7 or selective:
                 #coordinate type
-                coord_type = line
+                if "Selective" in line:
+                    selective = 1
+                else:
+                    coord_type = line
+                    if selective:
+                        i -= 1
+                    selective = 0
             if i >= 8 and i < 8 + sum(count):
                 #coordinates
                 coord.append([float(_) for _ in line.split()[0:3]])

@@ -40,19 +40,21 @@ def build_pandas(data_dir, csvs):
         crystal = structure_extract.id_crystal(poscar)
         dopant = structure_extract.impurity_type(poscar)
         site = structure_extract.dopant_site(poscar)
+        if dopant == 'pure':
+            dopant = site.replace("M_", "")
         try:
             entry = data.loc[(data['CdX'] == crystal) & (data['M'] == dopant) & \
                 (data['Doping Site'] == site)].index[0]
         except:
             print("Cannot open dataframe entry for crystal %s, site %s, and \
-                dopant %s.  Please check .csv" %(crystal, site, dopant))
+dopant %s.  Please check .csv for %s" %(crystal, site, dopant, poscar))
             continue
         try:
             bonds, angles = structure_extract.geometry_defect(8, dopant, poscar)
         except:
             print("Error (",sys.exc_info()[0], ")  determining bonds and angles\
-                for crystal %s, site %s and dopant %s.  Please check POSCAR" \
-                %(crystal, site, dopant))
+for crystal %s, site %s and dopant %s.  Please check POSCAR"\
+%(crystal, site, dopant))
             continue
         data.at[entry, "Bonds"] = bonds
         data.at[entry, "Angles"] = angles
@@ -63,14 +65,22 @@ def build_pandas(data_dir, csvs):
 def save_pandas(data, file_name):
     """
     """
-    data.to_hdf("file_name", 'data', data_columns=True)
+    data.to_hdf(file_name, 'data', data_columns=True)
     return
 
-def init_data(file_name, data_dir=None, csvs=None):
+def init_data(file_name, data_dir=None, csvs=None, refresh=False):
     """
     """
     if os.path.isfile(file_name):
-        return pandas.read_hdf(file_name, 'data')
+        if not refresh:
+            return pandas.read_hdf(file_name, 'data')
+        elif data_dir and csvs:
+            data = build_pandas(data_dir, csvs)
+            save_pandas(data, file_name)
+            return data
+        else:
+            raise Exception("Need directory and orginal *.csv files to\
+parse into a file.")
     else:
         if data_dir and csvs:
             data = build_pandas(data_dir, csvs)
@@ -78,4 +88,4 @@ def init_data(file_name, data_dir=None, csvs=None):
             return data
         else:
             raise Exception("Need directory and orginal *.csv files to\
-                parse into a file.")
+parse into a file.")
