@@ -71,19 +71,19 @@ def id_crystal(poscar):
     
     #comparisons not set to 0 given it could be an impurity in crystal:
     if te_amount > 0 and se_amount < 2 and s_amount < 2:
-        return 'cdte'
+        return 'CdTe'
     elif se_amount > 0:
         if te_amount / se_amount > 0.4:
-            return 'cdtese'
+            return 'CdTe_0.5Se_0.5'
     
     if se_amount > 0 and te_amount < 2 and s_amount < 2:
-        return 'cdse'
+        return 'CdSe'
     elif s_amount > 0:
         if se_amount / s_amount > 0.4:
-          return 'cdses'
+          return 'CdSe_0.5S_0.5'
 
     if s_amount > 0 and te_amount < 2 and se_amount < 2:
-        return 'cds'
+        return 'CdS'
 
     raise Exception("Unknown crystal type given by %s" %poscar)
 
@@ -118,6 +118,34 @@ def impurity_type(poscar):
         return "pure"
     else:
         return types[count.index(min(count))]
+
+def dopant_site(poscar):
+    """
+    With the given VASP POSCAR file, determine the impurity location
+    given the folder structure
+
+    Inputs
+    ------
+    poscar:  File path for the relevant POSCAR file
+
+    Outputs
+    -------
+    impurity type of the defect as defined by collaborators
+    """
+    if 'M_Cd' in poscar:
+        return 'M_Cd'
+    if 'M_i_Cd_site' in poscar:
+        return 'M_i_Cd_site'
+    if 'M_i_S_site' in pocasr:
+        return 'M_i_S_site'
+    if 'M_i_Se_site' in poscar:
+        return 'M_i_Se_site'
+    if 'M_i_Te_site' in poscar:
+        return 'M_i_Te_site'
+    if 'M_i_other' in poscar:
+        return 'M_i_old'
+    else:
+        raise Exception("Unknown dopant site given by %s" %poscar)
 
 def unit_vector(vector):
     """
@@ -160,7 +188,6 @@ def direct_to_cart(direct, vectors):
     Inputs
     ------
     direct    : numpy matrix containing the direct coordinates
-        np.square(vectors[0,2]))
     vectors   : numpy matrix containing the a, b, and c unit cell
                 vectors
 
@@ -173,22 +200,21 @@ def direct_to_cart(direct, vectors):
     c = np.sqrt(np.sum(vectors[2,:] ** 2))
     alpha = np.deg2rad(angle_between(vectors[1,:], vectors[2,:]))
     beta  = np.deg2rad(angle_between(vectors[2,:], vectors[0,:]))
-    gamma = np.deg2rad(ngle_between(vectors[0,:], vectors[1,:]))
+    gamma = np.deg2rad(angle_between(vectors[0,:], vectors[1,:]))
 
-    omega = np.dot(np.dot(np.dot(vectors[0,:], vectors[1,:]), vectors[2,:]),\
-        np.sqrt(1 - np.square(np.cos(alpha)) - np.squre(np.cos(beta)) -\
-        np.square(np.cos(gamma)) + 2 * np.cos(alpha) * np.cos(beta) *\
-        np.cos(gamma)))
-
+    omega = a * b * c * np.sqrt(1 - np.square(np.cos(alpha)) - \
+        np.square(np.cos(beta)) - np.square(np.cos(gamma)) + 2 * np.cos(alpha)\
+        * np.cos(beta) * np.cos(gamma))
+    
     #transpose to do matrix multiplication through numpy
-    direct = np.transpose(direct)
+    direct = np.asmatrix(np.transpose(direct))
 
-    mult = np.asmatrix([[a, b * np.cos(gamma), c * np.cos(beta)],\
+    mult = np.asmatrix(np.asarray([[a, b * np.cos(gamma), c * np.cos(beta)],\
                         [0, b * np.sin(gamma), (c * np.cos(alpha) -\
                           np.cos(beta) * np.cos(gamma)) / np.sin(gamma)],\
-                        [0, 0, omega / (a * b * np.sin(gamma))]])
-
-    xyz = mult.dot(direct)
+                        [0, 0, omega / (a * b * np.sin(gamma))]]))
+    
+    xyz = np.dot(mult, direct)
 
     #transpose so is easier to parse
     return np.transpose(xyz)
@@ -224,20 +250,27 @@ def determine_closest_atoms(number, defect, xyz, types):
 
     Outputs
     -------
-    numpy array containing the distance, the cartesian coord., and 
+    array containing the distance, the cartesian coord., and 
     the type of atom.
     """
-    AtmList = np.asmatrix([[0, [0,0,0], 'A'] for x in range(len(xyz))])
-    for i, coord in enumerate(xyz):
-        AtmList[i,0] = dist = dist_between(defect, coord)
-        AtmList[i,1] = coord
-        AtmList[i,2] = types[i]
-    AtmList.sort(axis=0)
+    if number < 1 or len(xyz) < 2:
+        #Presuming want the coordinate of the defect itself
+        return [0, np.asmatrix(defect), types[0]]
+    else:
+        atm_list = [[0, [0.,0.,0.], 'A'] for x in range(len(xyz))]
+        i = 0
+        for coord in xyz:
+            atm_list[i][0] = dist_between(defect, coord)
+            atm_list[i][1] = coord
+            atm_list[i][2] = types[i]
+            i += 1
+        #atm_list.sort(axis=0)
+        sorted(atm_list, key=lambda x: x[0])
 
-    #Return first number, skipping the 1st value, presuming is defect
-    return AtmList[1:number+1]
+        #Return first number, skipping the 1st value, presuming is defect
+        return atm_list[1:]
 
-def atom_angles(defect, xyz, types):
+def atom_angles(defect, bonds):
     """
     Determine angles around the defect coordinate.
 
@@ -253,16 +286,18 @@ def atom_angles(defect, xyz, types):
               defect
     """
     angles = []
-    for i in range(len(xyz)):
-        for j in range(i, len(xyz)):
-            if i == j:
-                continue
-            else:
-                center1 = np.subtract(xyz[i], defect)
-                center2 = np.subtract(xyz[j], defect)
-                angles.append(angle_between(center1, center2, types[i], \
-                    types[j]))
-    return np.asarray(angles)
+    if len(bonds) < 2:
+        angles = [[180., types[0][-1], None]]
+    else:
+        for i in range(len(bonds)):
+            for j in range(i, len(bonds)):
+                if i == j:
+                    continue
+                else:
+                    center1 = np.asarray(bonds[i][1]) - np.asarray(defect)[0]
+                    center2 = np.asarray(bonds[j][1]) - np.asarray(defect)[0]
+                    angles.append(angle_between(center1, center2))
+    return angles
 
 def geometry_defect(number, defect, poscar):
     """
@@ -291,8 +326,10 @@ def geometry_defect(number, defect, poscar):
     coord       = []
     atoms       = []
     with open(poscar, 'r') as fileIn:
-        for i, line in enumerate(fileIn):
-            if i > 2 and i < 5:
+        i = -1
+        for line in fileIn:
+            i += 1
+            if i >= 2 and i < 5:
                 #lattice vecotrs
                 vectors.append([float(_) for _ in line.split()])
             if i == 5:
@@ -300,26 +337,28 @@ def geometry_defect(number, defect, poscar):
                 types = line.split()
             if i == 6:
                 #Atom counts
-                count.append([int(_) for _ in line.split()])
-            if i == 8:
+                count = [int(_) for _ in line.split()]
+            if i == 7:
                 #coordinate type
                 coord_type = line
-            if i > 8 and i < 8 + sum(count):
+            if i >= 8 and i < 8 + sum(count):
                 #coordinates
                 coord.append([float(_) for _ in line.split()[0:3]])
-            if i > 8 + sum(count):
-                break
+    
     assert len(types) == len(count), \
         "Unequal number atom types and atom counts in %s" %poscar
-    
+   
+    assert sum(count) == len(coord), "Unequal number of declard atoms (%i) and\
+        coordinates (%i) in %s" %(sum(count), len(coord), poscar)
+
     #Direct to Cartesian transformation if needed
-    if Cart in coord_type:
+    if 'Cart' in coord_type:
         pass
     else:
-        coord = direct_to_cart(coord, vectors)
+        coord = direct_to_cart(np.asarray(coord), np.asarray(vectors))
     
     #List of all the atom types in it
-    for i in len(types):
+    for i in range(len(types)):
         for j in range(int(count[i])):
             atoms.append(types[i])
     
@@ -327,10 +366,13 @@ def geometry_defect(number, defect, poscar):
     defect_coord = coord[atoms.index(defect)]
 
     #Determine bond lengths around the defect:
-    bonds = determine_closest_atoms(number, defect_coord, coord, atoms)
+    bonds = determine_closest_atoms(number, defect_coord, np.asarray(coord), atoms)
 
     #Determine bond angles around the defect:
-    angles = atom_angles(defect_coord, bonds[:,1], bonds[:,2])
+    if number > 2:
+        angles = atom_angles(defect_coord, bonds)
 
-    #Return:
-    return [bonds, angles]
+        #Return:
+        return [bonds, angles]
+    else:
+        return bonds
