@@ -134,9 +134,15 @@ def dopant_site(poscar):
     """
     if 'M_Cd' in poscar:
         return 'M_Cd'
+    if 'M_S' in poscar:
+        return 'M_S'
+    if 'M_Se' in poscar:
+        return 'M_Se'
+    if 'M_Te' in poscar:
+        return 'M_Te'
     if 'M_i_Cd_site' in poscar:
         return 'M_i_Cd_site'
-    if 'M_i_S_site' in pocasr:
+    if 'M_i_S_site' in poscar:
         return 'M_i_S_site'
     if 'M_i_Se_site' in poscar:
         return 'M_i_Se_site'
