@@ -275,10 +275,10 @@ def determine_closest_atoms(number, defect, xyz, types):
             atm_list[i][2] = types[i]
             i += 1
         #atm_list.sort(axis=0)
-        sorted(atm_list, key=lambda x: x[0])
+        atm_list = sorted(atm_list, key=lambda x: x[0])
 
         #Return first number, skipping the 1st value, presuming is defect
-        return atm_list[1:]
+        return atm_list[1:number + 1]
 
 def atom_angles(defect, bonds):
     """
@@ -296,8 +296,10 @@ def atom_angles(defect, bonds):
               defect
     """
     angles = []
-    if len(bonds) < 2:
-        angles = [[180., types[0][-1], None]]
+    if len(bonds) > 2:
+        #Only should trip if there's only one entry in the bonds matrix
+        if isinstance(bonds[2], str):
+            angles = [[180., bonds[1], bonds[2]]]
     else:
         for i in range(len(bonds)):
             for j in range(i, len(bonds)):
