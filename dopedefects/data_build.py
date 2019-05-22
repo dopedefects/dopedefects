@@ -68,11 +68,7 @@ def save_pandas(data, file_name):
     data.to_hdf(file_name, 'data', data_columns=True)
     return
 
-def clean_pandas(data):
-    return data.dropna() 
-
-def init_data(file_name, data_dir=None, csvs=None, refresh=False, \
-    dropna = False)
+def init_data(file_name, data_dir=None, csvs=None, refresh=False, dna = True):
     """
     """
     if os.path.isfile(file_name):
@@ -80,6 +76,8 @@ def init_data(file_name, data_dir=None, csvs=None, refresh=False, \
             return pandas.read_hdf(file_name, 'data')
         elif data_dir and csvs:
             data = build_pandas(data_dir, csvs)
+            if dna:
+                data = data.dropna()
             save_pandas(data, file_name)
             return data
         else:
@@ -88,8 +86,8 @@ parse into a file.")
     else:
         if data_dir and csvs:
             data = build_pandas(data_dir, csvs)
-            if dropna:
-                data = clean_pandas(data)
+            if dna:
+                data = data.dropna()
             save_pandas(data, file_name)
             return data
         else:
