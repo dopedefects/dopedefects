@@ -246,7 +246,7 @@ def dist_between(xyz1, xyz2):
     """
     xyz1 = np.asarray(xyz1)
     xyz2 = np.asarray(xyz2)
-    return np.sqrt(np.sum((xyz1-xyz2)) ** 2)
+    return np.sqrt(np.sum((xyz1-xyz2) ** 2))
 
 def determine_closest_atoms(number, defect, xyz, types):
     """
@@ -298,10 +298,11 @@ def atom_angles(defect, bonds):
               defect
     """
     angles = []
+    defect = np.asarray(defect)
     if len(bonds) > 2:
         #Only should trip if there's only one entry in the bonds matrix
         if isinstance(bonds[2], str):
-            angles = [[180., bonds[1], bonds[2]]]
+            angles = [180.]
     else:
         for i in range(len(bonds)):
             for j in range(i, len(bonds)):
@@ -330,8 +331,8 @@ def geometry_defect(number, defect, poscar):
     ------
     bonds :     numpy array containing the bondlength, coordinates, and
                 atom type of the atoms surrounding the defect atom.
-    angles:     numpy array containing the angle, and types for the two
-                contained atoms surrounding the defect atom.
+    angles:     numpy array containing the angles for the  atoms 
+                surrounding the defect atom.
     """
     vectors     = []
     types       = []
@@ -390,10 +391,9 @@ def geometry_defect(number, defect, poscar):
     bonds = determine_closest_atoms(number, defect_coord, np.asarray(coord), atoms)
 
     #Determine bond angles around the defect:
-    if number > 2:
-        angles = atom_angles(defect_coord, bonds)
+    angles = atom_angles(defect_coord, bonds)
 
-        #Return:
-        return [bonds, angles]
-    else:
-        return bonds
+    #Return:
+    #print("BONDS = ", bonds)
+    #print("ANGLES = ", angles)
+    return [bonds, angles]
