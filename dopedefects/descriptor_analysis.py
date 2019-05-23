@@ -11,8 +11,113 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.svm import SVR
 
 def main():
+    # #Create Data File
+    # data_file = open('featureSelectionTestScores.dat', 'w')
+    #
+    # #Get Coefficients
+    # CdTeCoefs = do_feature_selection('CdTe',data_file)
+    # CdSeCoefs = do_feature_selection('CdSe',data_file)
+    # CdSCoefs = do_feature_selection('CdS',data_file)
+    # CdSeSCoefs = do_feature_selection('CdSe_0.5S_0.5',data_file)
+    # CdTeSCoefs = do_feature_selection('CdTe_0.5S_0.5',data_file)
+    #
+    #
+    # #Close Data File
+    # data_file.close()
+    #
+    # #Set Up Figure
+    # fig, ax = plt.subplots(9,5,figsize=(20,10))
+    # plt.xlim((0,19))
+    #
+    # #Make Subplots
+    # im = make_subplot('CdTe', CdTeCoefs, 0, ax)
+    # make_subplot('CdSe', CdSeCoefs, 1, ax)
+    # make_subplot('CdS', CdSCoefs, 2, ax)
+    # make_subplot('CdSe_0.5S_0.5', CdSeSCoefs, 3, ax)
+    # make_subplot('CdTe_0.5S_0.5', CdTeSCoefs, 4, ax)
+    #
+    # #Format Figure, Add Colorbar
+    # plt.tight_layout()
+    # fig.subplots_adjust(right=0.95) #6
+    # cbar_ax = fig.add_axes([0.956, 0.185, 0.01, 0.796])
+    # bar = fig.colorbar(im, cax=cbar_ax)
+    #
+    # #Save and Display Figure
+    # plt.savefig('featureSelection.png')
+    # plt.show()
+
+
     #Create Data File
-    data_file = open('featureSelectionTestScores.dat', 'w')
+    data_file = open('featureSelectionTestScores_all.dat', 'w')
+
+    df = pd.read_hdf('data.hdf5')
+
+    print(df.head())
+
+    print(df.dtypes)
+
+    X = df[['Period', 'Group', 'Site', 'Delta Ion. Rad.', 'Delta At. Wt.',
+       'Delta Cov. Rad.', 'Delta Ion. En.', 'Delta At. Rad.', 'Delta EA',
+       'Delta EN', 'Delta At. Num.', 'Delta Val.', '# Cd Neighbors',
+       '# S Neighbors', '# Se Neighbors', '# Te Neighbors',
+       '# Se/Te Neighbors', 'Corrected VBM (eV)', 'Corrected CBM (eV)',
+       'dH(Cd-rich) UC', 'dH(Mod) UC', 'dH(X-rich) UC',
+       'Ionic_radius', 'Boiling_point', 'Melting_point',
+       'Density', 'Atomic_weight', 'ICSD_volume', 'Cov_radius',
+       'Atomic_radius', 'Electron_affinity', 'Atomic_vol', 'Mendeleev_number',
+       'Ionization_pot_1', 'Ionization_pot_2', 'Ionization_pot_3',
+       'Therm_expn_coeff', 'Sp_heat_cap', 'Therm_cond', 'Heat_of_fusion',
+       'Heat_of_vap', 'Electronegativity', 'At_num', 'Valence', 'Ox_state']]
+
+    Y = ['dH(Cd-rich)', 'dH(Mod)', 'dH(X-rich)',
+       '(+3/+2)', '(+2/+1)', '(+1/0)', '(0/-1)', '(-1/-2)', '(-2/-3)']
+
+    data_file.write("\n\n\t∆H(Cd-rich):")
+
+    for i in range(0,9):
+        data_file.write("\n\n\t"+str(Y[i])+":")
+
+        cd_las_coefs, cd_las_list = lasso_reg(X,df[Y[i]],data_file)
+        cd_rr_coefs, cd_rr_list = ridge_reg(X,df[Y[i]],data_file)
+
+        cd_rfr_list = rf_reg(X,df[Y[i]].values.ravel(),data_file)
+
+        print("Min: " + str(np.amin(cd_las_list)) + "\tMax: " + str(np.amax(cd_las_list)))
+        print("Min: " + str(np.amin(cd_rr_list)) + "\tMax: " + str(np.amax(cd_rr_list)))
+        print("Min: " + str(np.amin(cd_rfr_list)) + "\tMax: " + str(np.amax(cd_rfr_list)))
+
+        cd_list = np.concatenate((cd_las_list, np.array([cd_rr_list]), cd_rfr_list), axis=0)
+
+        plt.figure(figsize=(10,3))
+        plt.pcolor(cd_list, cmap=plt.cm.PRGn, vmin=-1, vmax=1)
+        plt.colorbar()
+        plt.yticks(np.arange(0.5,3),['Lasso', 'Ridge', 'RFR'])
+        plt.xticks(np.arange(0.5,45),['Period', 'Group', 'Site', 'Delta Ion. Rad.', 'Delta At. Wt.',
+           'Delta Cov. Rad.', 'Delta Ion. En.', 'Delta At. Rad.', 'Delta EA',
+           'Delta EN', 'Delta At. Num.', 'Delta Val.', '# Cd Neighbors',
+           '# S Neighbors', '# Se Neighbors', '# Te Neighbors',
+           '# Se/Te Neighbors', 'Corrected VBM (eV)', 'Corrected CBM (eV)',
+           'dH(Cd-rich) UC', 'dH(Mod) UC', 'dH(X-rich) UC',
+           'Ionic_radius', 'Boiling_point', 'Melting_point',
+           'Density', 'Atomic_weight', 'ICSD_volume', 'Cov_radius',
+           'Atomic_radius', 'Electron_affinity', 'Atomic_vol', 'Mendeleev_number',
+           'Ionization_pot_1', 'Ionization_pot_2', 'Ionization_pot_3',
+           'Therm_expn_coeff', 'Sp_heat_cap', 'Therm_cond', 'Heat_of_fusion',
+           'Heat_of_vap', 'Electronegativity', 'At_num', 'Valence', 'Ox_state'], rotation=90)
+
+        plt.ylabel(str(Y[i]))
+
+        plt.tight_layout()
+
+        plt.savefig('featureSelection_all_'+ str(i) +'.pdf')
+        plt.show()
+
+        Las_score = []
+        Ridge_score = []
+        Rfr_score = []
+
+
+    exit()
 
     #Get Coefficients
     CdTeCoefs = do_feature_selection('CdTe',data_file)
@@ -43,10 +148,8 @@ def main():
     bar = fig.colorbar(im, cax=cbar_ax)
 
     #Save and Display Figure
-    plt.savefig('featureSelection.png')
+    plt.savefig('featureSelection_all.pdf')
     plt.show()
-
-
 
 
 
