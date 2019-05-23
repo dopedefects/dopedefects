@@ -77,7 +77,9 @@ def build_pandas(data_dir, csvs):
 dopant %s.  Please check .csv for %s" %(crystal, site, dopant, poscar))
             continue
         try:
-            bonds, angles = structure_extract.geometry_defect(8, dopant, poscar)
+            bonds_angles = structure_extract.geometry_defect(8, dopant, poscar)
+            bonds = bonds_angles[0]
+            angles = bonds_angles[1]
         except:
             print("Error (",sys.exc_info()[0], ")  determining bonds and angles\
 for crystal %s, site %s and dopant %s.  Please check POSCAR"\
@@ -86,7 +88,7 @@ for crystal %s, site %s and dopant %s.  Please check POSCAR"\
         data.at[entry, "Bonds"] = bonds
         data.at[entry, "Angles"] = angles
         data.at[entry, "Coulomb"] = structure_properties.coulomb(bonds, \
-            structure_extract.geometry_defect(0, dopant, poscar))
+            structure_extract.geometry_defect(0, dopant, poscar)[0])
     data = clean_pandas(data)
     data = append_atomic_properties(data)
     return data

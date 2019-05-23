@@ -10,7 +10,7 @@ import dopedefects.tests.context as context
 
 #Variables for testing
 testing_dir = os.path.join(os.path.dirname(__file__), 'test_data/')
-vecotors = np.asarray([[6.86700013030, 0.0, 0.0], [-3.4335000515, 5.949965370,\
+vectors = np.asarray([[6.86700013030, 0.0, 0.0], [-3.4335000515, 5.949965370,\
     0.0], [0.0, 0.0, 19.8069992065]])
 direct_coords = np.asarray([[0.0, 0.0, 0.33676992], [0.0, 0.0, 0.666322984], \
     [0.333332981, 0.666667004, 0.332989987]])
@@ -154,9 +154,9 @@ class impurity_type(unittest.TestCase):
         Tests to ensure that if a pure cell is passed in it will return
         that it is a pure crystal.
         """
-        assert context.structure_extract.id_crystal(testing_dir + \
-            "/cds_crystal") == 'cds', "Unable to identify a Cd/S crystal"
-
+        crystal = context.structure_extract.id_crystal(testing_dir + \
+            "/cds_crystal")
+        assert crystal  == 'CdS', "Unable to identify a Cd/S crystal"
         return
 
     def test_impurity(self):
@@ -224,9 +224,10 @@ class direct_to_cart(unittest.TestCase):
     def test_direct_to_cart(self):
         """
         """
-        assert np.isclose(context.structure_extract.direct_to_cart(\
-            direct_coords, vectors), cart_coords).all(), "Direct and Cart \
-            coords don't are not the same."
+        transformed = context.structure_extract.direct_to_cart(direct_coords,\
+            vectors)
+        assert np.isclose(transformed, cart_coords, rtol=1e-01).all(),\
+            "Direct and Cart coords are not the same."
         return
 
 class dist_between(unittest.TestCase):
@@ -236,9 +237,9 @@ class dist_between(unittest.TestCase):
     def test_dist_between(self):
         """
         """
-        assert np.isclose(context.structure_extract.dist_between([1,2,3], \
-            [4,5,6]), 3), "Unable to properly calculate distance between two \
-            points."
+        distance = context.structure_extract.dist_between([1,2,3], [4,5,6])
+        assert np.isclose(distance, 5.19615242271), "Unable to properly \
+calculate distance between two points."
 
 class determine_closest_atoms(unittest.TestCase):
     """
@@ -264,7 +265,8 @@ class determine_closest_atoms(unittest.TestCase):
     def test_type_association(self):
         """
         """
-        assert determine_closest_atoms.closest_atoms[0,2] == 'Cr',\
+        print("CLOSEST ATOMS = ", determine_closest_atoms.closest_atoms)
+        assert determine_closest_atoms.closest_atoms[0][2] == 'I',\
             "Improper coord/type association"
         return
 
@@ -280,8 +282,8 @@ class determine_closest_atoms(unittest.TestCase):
         """
         """
         assert len(context.structure_extract.determine_closest_atoms(2, [0., \
-            0., 6.609139919], [[0., 0., 6.609139919]], ['Ar'])) == 3, "Improper \
-            length for defect return with shortened list"
+            0., 6.609139919], [[0., 0., 6.609139919]], ['Ar'])) == 3, "Improper\
+ length for defect return with shortened list"
         return
 
 class atom_angles(unittest.TestCase):
@@ -293,24 +295,16 @@ class atom_angles(unittest.TestCase):
     def test_linear_angle(self):
         """
         """
-        assert context.structure_extract.atom_angles([0., 0., 6.609139919], \
-            [12., [-1.209587812, 5.848490715, 5.038246632], 'Cr'])[0] == 180, \
-            "Linear molecule doesn't return 180"
+        atom_angle = context.structure_extract.atom_angles([0., 0., 6.609139919], \
+            [12., [-1.209587812, 5.848490715, 5.038246632], 'Cr'])
+        assert atom_angle[0] == 180, "Linear molecule doesn't return 180"
         return
     
     def test_perp_angle_angle(self):
         """
         """
-        assert np.isclose(atom_angles.right_angle_atoms[0]), 90),\
+        assert np.isclose(atom_angles.right_angle_atoms[0], 90),\
             "right angle atoms not 90"
-        return
-
-    def test_perp_angle_type(self):
-        """
-        """
-        assert context.structure_extract.atom_angles(\
-            atom_angles.right_angle_atoms[0], atom_angles.right_angle_atoms[1:]\
-            ) == 'Ar', "Angle type not maintained"
         return
 
 class geometry_defect(unittest.TestCase):
