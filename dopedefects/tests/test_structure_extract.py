@@ -223,6 +223,8 @@ class direct_to_cart(unittest.TestCase):
     """
     def test_direct_to_cart(self):
         """
+        Tests to ensure that the transfrom between direct and cartesian
+        coordinates is able to properly return the cartesian coords.
         """
         transformed = context.structure_extract.direct_to_cart(direct_coords,\
             vectors)
