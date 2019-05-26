@@ -8,6 +8,8 @@ import numpy as np
 import dopedefects.tests.context as context
 
 #Testing variables
+test_two = None 
+answer_two = None
 
 #Unit tests
 class coulomb(unittest.TestCase):

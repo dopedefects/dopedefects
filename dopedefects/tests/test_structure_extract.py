@@ -250,6 +250,8 @@ class determine_closest_atoms(unittest.TestCase):
         0., 6.609139919], cart_coords, types)
     def test_closest_atoms_length(self):
         """
+        Tests to ensure that the determine_closest_atoms function 
+        returns the requested number of atoms.
         """
         assert len(determine_closest_atoms.closest_atoms) == 2, \
             "more atoms returned than asked for"
@@ -257,6 +259,7 @@ class determine_closest_atoms(unittest.TestCase):
 
     def test_closest_atoms_no_defect(self):
         """
+        Tests to ensure that the defect is not returned in the output.
         """
         assert 'Ar' not in determine_closest_atoms.closest_atoms, \
             "Defect included in returned atoms"
@@ -264,6 +267,8 @@ class determine_closest_atoms(unittest.TestCase):
 
     def test_type_association(self):
         """
+        Tests to ensure that the atom types are not scrambled when
+        they are returned.
         """
         print("CLOSEST ATOMS = ", determine_closest_atoms.closest_atoms)
         assert determine_closest_atoms.closest_atoms[0][2] == 'I',\
@@ -272,6 +277,8 @@ class determine_closest_atoms(unittest.TestCase):
 
     def test_defect_return(self):
         """
+        Tests to ensure that when no closest atoms are returned, the
+        defected center is returned.
         """
         defected_return = context.structure_extract.determine_closest_atoms(0,\
             [0., 0., 6.609139919], cart_coords, types)
@@ -280,6 +287,8 @@ class determine_closest_atoms(unittest.TestCase):
 
     def test_defect_list_return(self):
         """
+        Test to ensure that when only one set of coordinates are passed
+        in, the defect center is returned.
         """
         assert len(context.structure_extract.determine_closest_atoms(2, [0., \
             0., 6.609139919], [[0., 0., 6.609139919]], ['Ar'])) == 3, "Improper\
@@ -294,14 +303,19 @@ class atom_angles(unittest.TestCase):
         [[ 12., [1., 1., 0.], 'Ar'], [14.,  [0., 0., 1.], 'F']])
     def test_linear_angle(self):
         """
+        Tests to ensure that when only two atoms are passed in, a
+        straight line is returned.
         """
-        atom_angle = context.structure_extract.atom_angles([0., 0., 6.609139919], \
-            [12., [-1.209587812, 5.848490715, 5.038246632], 'Cr'])
+        atom_angle = context.structure_extract.atom_angles(\
+            [0., 0., 6.609139919], [12., [-1.209587812, 5.848490715, \
+            5.038246632], 'Cr'])
         assert atom_angle[0] == 180, "Linear molecule doesn't return 180"
         return
     
     def test_perp_angle_angle(self):
         """
+        Tests to ensure that when three atoms set up at a 90 degree
+        angle are passed in the return is 90 degrees.
         """
         assert np.isclose(atom_angles.right_angle_atoms[0], 90),\
             "right angle atoms not 90"
@@ -311,7 +325,14 @@ class geometry_defect(unittest.TestCase):
     """
     Test suite for the structure_extract.geometry_defect function
     """
+    geometry_return = context.structure_extract.geometry_defect(4, 'Ar', \
+        testing_dir + "/GEOM_TEST_POSCAR")
     def test_geometry_defects(self):
         """
+        Tests to ensure that the result from the geometry_defects
+        function returns two matricies, one for bonds and one for
+        angles.
         """
+        assert len(geometry_defect.geometry_return) == 2, "Bonds and angles not\
+both returned."
         return

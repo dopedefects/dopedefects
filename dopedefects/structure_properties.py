@@ -42,8 +42,8 @@ def coulomb(bond_length, defect):
                 coulomb[i,i] = 0.5 * np.power(atomic_table.atomic_weight(\
                     bond_length[i][2])[0], 2.4)
             else:
-                coulomb[i,j] = (atomic_table.atomic_weight(bond_length[i][2])[0]\
-                    * atomic_table.atomic_weight(bond_length[j][2])[0]) / (\
+                coulomb[i,j] = (atomic_table.atomic_weight(bond_length[i][2])\
+                    [0] * atomic_table.atomic_weight(bond_length[j][2])[0]) / (\
                     np.absolute(bond_length[i][0] - bond_length[j][0]))
     return coulomb
                 
