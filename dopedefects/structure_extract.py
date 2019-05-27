@@ -297,10 +297,10 @@ def atom_angles(defect, bonds):
     """
     angles = []
     defect = np.asarray(defect)
-    if len(bonds) > 2:
+    if len(bonds) > 2 and isinstance(bonds[2], str):
         #Only should trip if there's only one entry in the bonds matrix
-        if isinstance(bonds[2], str):
-            angles = [180.]
+        #and as such the molecule being tested is linear
+        angles = [180.]
     else:
         for i in range(len(bonds)):
             for j in range(i, len(bonds)):
