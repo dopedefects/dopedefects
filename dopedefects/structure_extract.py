@@ -74,19 +74,19 @@ def id_crystal(poscar):
         s_amount = count[types.index('S')]
     
     #comparisons not set to 0 given it could be an impurity in crystal:
-    if te_amount > 0 and se_amount < 2 and s_amount < 2:
+    if te_amount > 0 and se_amount < 2 and s_amount < 2 and '/CdTe/' in poscar:
         return 'CdTe'
-    elif se_amount > 0:
-        if te_amount / se_amount > 0.4:
+    if se_amount > 0:
+        if te_amount / se_amount > 0.4 and '/CdTe_0.5Se_0.5/' in poscar:
             return 'CdTe_0.5Se_0.5'
     
-    if se_amount > 0 and te_amount < 2 and s_amount < 2:
+    if se_amount > 0 and te_amount < 2 and s_amount < 2 and '/CdSe/' in poscar:
         return 'CdSe'
-    elif s_amount > 0:
-        if se_amount / s_amount > 0.4:
+    if s_amount > 0:
+        if se_amount / s_amount > 0.4 and '/CdSe_0.5S_0.5/' in poscar:
           return 'CdSe_0.5S_0.5'
 
-    if s_amount > 0 and te_amount < 2 and se_amount < 2:
+    if s_amount > 0 and te_amount < 2 and se_amount < 2 and '/CdS/' in poscar:
         return 'CdS'
 
     raise Exception("Unknown crystal type given by %s" %poscar)
@@ -105,6 +105,7 @@ def impurity_type(poscar):
     """
     types = []
     count = []
+    num_one = 0
     with open(poscar, 'r') as fileIn:
         for i, line in enumerate(fileIn):
             if i == 5:
@@ -113,6 +114,8 @@ def impurity_type(poscar):
                 count = line.split()
                 for j in range(len(count)):
                     count[j] = int(count[j])
+                    if count[j] == 1:
+                        num_one += 1
             if i >=6:
                 break
     assert len(types) == len(count), \
@@ -120,6 +123,14 @@ def impurity_type(poscar):
     #Assuming will only be 1 defect per unit cell
     if min(count) > 5:
         return "pure"
+    #if there's more than one with only 1 entry
+    elif num_one > 1:
+        #print("num_one > 1 for %s" %poscar)
+        for x in range(len(types)):
+            #print("TYPES TO CONSIDER: ", types[x], "COUNT: ", count[x])
+            if '/' + types[x] + '/' in poscar and count[x] == 1:
+                #print("RETURNING: ", types[x])
+                return types[x]
     else:
         return types[count.index(min(count))]
 
@@ -153,6 +164,8 @@ def dopant_site(poscar):
     if 'M_i_Te_site/' in poscar:
         return 'M_i_Te_site'
     if 'M_i_other/' in poscar: 
+        return 'M_i_old'
+    if 'M_i_neutral_site/' in poscar:
         return 'M_i_old'
     else:
         raise Exception("Unknown dopant site given by %s" %poscar)

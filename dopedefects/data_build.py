@@ -18,6 +18,18 @@ import tables
 
 def init_pandas(data_dir, csvs):
     """
+    Initiate the external properties data frames.
+
+    Inputs
+    ------
+    data_dir :    The path to the data directory where the csvs are
+    csvs     :    The name of the csv files where the extra properties
+                  will be read in from.
+
+    Outputs
+    -------
+    data     :    The pandas dataframe containing the extra properties
+                  contained within the csv files passed into csvs
     """
     data = pandas.DataFrame()
     for csv in csvs:
@@ -27,6 +39,18 @@ def init_pandas(data_dir, csvs):
 
 def clean_pandas(data):
     """
+    Remove from consideration those locations in the pandas dataframe
+    where there is not a POSCAR entry
+
+    Inputs
+    ------
+    data  :   The pandas dataframe containing the atomic and structural
+              properties
+
+    Outputs
+    -------
+    data  :   The cleaned pandas dataframe contining the atomic and
+              structural properties
     """
     entries = np.where(pandas.isnull(data['Bonds']) & pandas.isnull(\
         data['Angles']) & pandas.isnull(data['Coulomb']))[0]
@@ -34,6 +58,19 @@ def clean_pandas(data):
 
 def append_atomic_properties(data, file_in="Elemental_properties.csv"):
     """
+    Append the Elemental properties from the given csv file to the
+    provided pandas database
+
+    Inputs
+    ------
+    data    : The pandas dataframe containing the atomic and structural
+              properteis
+    file_in : The csv file containing the extra columns to append
+
+    Outputs
+    -------
+    data    : The pandas dataframe containing the additional rows from
+              file_in
     """
     atomic_properties = pandas.read_csv(file_in)
     for i in data.index.values:
@@ -51,6 +88,21 @@ fill in missing values to %s, or correct input data." %(atom, file_in))
 
 def build_pandas(data_dir, csvs):
     """
+    Builds the data matrix given the list of csvs and calculates the
+    structural properties and builds the pandas dataframe containing
+    all the given information.
+
+    Inputs
+    ------
+    data_dir  : The directory containing the POSCAR files for the
+                structures of interest
+    csvs      : The file containing the csv files for adding additional
+                properties to pandas dataframe
+
+    Outputs
+    -------
+    data      : The pandas dataframe containing relevant information 
+                for the ML processes.
     """
     data = init_pandas(data_dir, csvs)
     poscar_list = structure_extract.find_files(data_dir)
@@ -77,7 +129,7 @@ def build_pandas(data_dir, csvs):
 dopant %s.  Please check .csv for %s" %(crystal, site, dopant, poscar))
             continue
         try:
-            bonds_angles = structure_extract.geometry_defect(8, dopant, poscar)
+            bonds_angles = structure_extract.geometry_defect(7, dopant, poscar)
             bonds = bonds_angles[0]
             angles = bonds_angles[1]
         except:
@@ -95,12 +147,41 @@ for crystal %s, site %s and dopant %s.  Please check POSCAR"\
 
 def save_pandas(data, file_name):
     """
+    Saves the given pandas dataframe into an hdf5 file to resume when
+    needed
+
+    Inputs
+    ------
+    data      : The pandas dataframe to save to file
+    file_name : The name for the saved file
+
+    Outputs
+    -------
+    N/A
     """
     data.to_hdf(file_name, 'data', data_columns=True)
     return
 
 def init_data(file_name, data_dir=None, csvs=None, refresh=False, dna = True):
     """
+    Calls the constructing functions or resumes from file to return the
+    pandas dataframe containing relevant information for ML application
+
+    Inputs
+    ------
+    file_name : The name for the data file to resume or save from or to
+    data_dir  : The directory containing the POSCAR files of interest
+    csvs      : A list containing csvs with additinal rows to append to
+                the returned dataframe
+    refresh   : Whether to force the generation of the pandas dataframe
+                anew or allow for the reading in from file
+    dna       : Remove any rows from the resulting dataframe with N/A
+                entries (incomplete or non-calculated structures)
+
+    Outputs
+    -------
+    data      : The cleaned (if requested) pandas dataframe containing
+                the structual and atomic properties for use in ML.
     """
     if os.path.isfile(file_name):
         if not refresh:
