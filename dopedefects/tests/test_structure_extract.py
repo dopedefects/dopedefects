@@ -89,7 +89,7 @@ class id_crystal(unittest.TestCase):
         Tests a POSCAR file containing a Cd/Te crystal returns as cdte
         """
         assert context.structure_extract.id_crystal(testing_dir + \
-            "/cdte_crystal") == 'CdTe', "Unable to identify a Cd/Te crystal"
+            "/CdTe/cdte_crystal") == 'CdTe', "Unable to identify a Cd/Te crystal"
         return
 
     def test_cdtese_crystal(self):
@@ -97,7 +97,7 @@ class id_crystal(unittest.TestCase):
         Tests a POSCAR file containing a Cd/Te/Secrystal returns as cdtese
         """
         assert context.structure_extract.id_crystal(testing_dir + \
-            "/cdtese_crystal") == 'CdTe_0.5Se_0.5', \
+            "/CdTe_0.5Se_0.5/cdtese_crystal") == 'CdTe_0.5Se_0.5', \
             "Unable to identify a Cd/(Te/Se) crystal"
         return
 
@@ -106,7 +106,7 @@ class id_crystal(unittest.TestCase):
         Tests a POSCAR file containing a Cd/Se crystal returns as cdse
         """
         assert context.structure_extract.id_crystal(testing_dir + \
-            "/cdse_crystal") == 'CdSe', "Unable to identify a Cd/Se crystal"
+            "/CdSe/cdse_crystal") == 'CdSe', "Unable to identify a Cd/Se crystal"
         return
 
     def test_cdses_crystal(self):
@@ -115,7 +115,7 @@ class id_crystal(unittest.TestCase):
         as cdses
         """
         assert context.structure_extract.id_crystal(testing_dir + \
-            "/cdses_crystal") == 'CdSe_0.5S_0.5', \
+            "/CdSe_0.5S_0.5/cdses_crystal") == 'CdSe_0.5S_0.5', \
             "Unable to identify a Cd/(Se/S) crystal"
         return
 
@@ -124,7 +124,7 @@ class id_crystal(unittest.TestCase):
         TesAts a POSCAR file containing a Cd/S crystal returns as cds
         """
         assert context.structure_extract.id_crystal(testing_dir + \
-            "/cds_crystal") == 'CdS', "Unable to identify a Cd/S crystal"
+            "/CdS/cds_crystal") == 'CdS', "Unable to identify a Cd/S crystal"
         return
 
     def test_unknown_crystal(self):
@@ -155,7 +155,7 @@ class impurity_type(unittest.TestCase):
         that it is a pure crystal.
         """
         crystal = context.structure_extract.id_crystal(testing_dir + \
-            "/cds_crystal")
+            "/CdS/cds_crystal")
         assert crystal  == 'CdS', "Unable to identify a Cd/S crystal"
         return
 
