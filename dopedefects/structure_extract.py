@@ -1,9 +1,9 @@
 """
 Helper functions to extract information from given POSCAR files
 """
-import numpy as np
 import os
-import sys
+import numpy as np
+
 
 def find_files(data_dir):
     """
@@ -61,7 +61,7 @@ def id_crystal(poscar):
                 count = line.split()
                 for j in range(len(count)):
                     count[j] = int(count[j])
-            if i >=6:
+            if i >= 6:
                 break
     assert len(types) == len(count), \
         "Unequal number atom types and atom counts in %s" %poscar
@@ -72,19 +72,19 @@ def id_crystal(poscar):
         se_amount = count[types.index('Se')]
     if 'S' in types:
         s_amount = count[types.index('S')]
-    
+
     #comparisons not set to 0 given it could be an impurity in crystal:
     if te_amount > 0 and se_amount < 2 and s_amount < 2 and '/CdTe/' in poscar:
         return 'CdTe'
     if se_amount > 0:
         if te_amount / se_amount > 0.4 and '/CdTe_0.5Se_0.5/' in poscar:
             return 'CdTe_0.5Se_0.5'
-    
+
     if se_amount > 0 and te_amount < 2 and s_amount < 2 and '/CdSe/' in poscar:
         return 'CdSe'
     if s_amount > 0:
         if se_amount / s_amount > 0.4 and '/CdSe_0.5S_0.5/' in poscar:
-          return 'CdSe_0.5S_0.5'
+            return 'CdSe_0.5S_0.5'
 
     if s_amount > 0 and te_amount < 2 and se_amount < 2 and '/CdS/' in poscar:
         return 'CdS'
@@ -94,7 +94,7 @@ def id_crystal(poscar):
 def impurity_type(poscar):
     """
     With the given VASP POSCAR file, determine defect type
-    
+
     Inputs
     ------
     poscar:   string containing the path for the POSCAR file
@@ -116,7 +116,7 @@ def impurity_type(poscar):
                     count[j] = int(count[j])
                     if count[j] == 1:
                         num_one += 1
-            if i >=6:
+            if i >= 6:
                 break
     assert len(types) == len(count), \
         "Unequal number atom types and atom counts in %s" %poscar
@@ -124,7 +124,7 @@ def impurity_type(poscar):
     if min(count) > 5:
         return "pure"
     #if there's more than one with only 1 entry
-    elif num_one > 1:
+    if num_one > 1:
         #print("num_one > 1 for %s" %poscar)
         for x in range(len(types)):
             #print("TYPES TO CONSIDER: ", types[x], "COUNT: ", count[x])
@@ -163,7 +163,7 @@ def dopant_site(poscar):
         return 'M_i_Se_site'
     if 'M_i_Te_site/' in poscar:
         return 'M_i_Te_site'
-    if 'M_i_other/' in poscar: 
+    if 'M_i_other/' in poscar:
         return 'M_i_old'
     if 'M_i_neutral_site/' in poscar:
         return 'M_i_old'
@@ -173,7 +173,7 @@ def dopant_site(poscar):
 def unit_vector(vector):
     """
     Returns unit vector of the vector.
-    
+
     Inputs
     ------
     vector :  numpy vector which to return the unit vector of
@@ -181,7 +181,7 @@ def unit_vector(vector):
     Outputs
     -------
     vector :  numpy unit vector for input vector
-    
+
     """
     return vector / np.linalg.norm(vector)
 
@@ -207,7 +207,7 @@ def angle_between(a, b):
 def direct_to_cart(direct, vectors):
     """
     Given the direct coordinates, transform into cartesian
-    
+
     Inputs
     ------
     direct    : numpy matrix containing the direct coordinates
@@ -218,17 +218,17 @@ def direct_to_cart(direct, vectors):
     -------
     xyz       : numpy matrix with the xyz coordinates
     """
-    a = np.sqrt(np.sum(vectors[0,:] ** 2))
-    b = np.sqrt(np.sum(vectors[1,:] ** 2))
-    c = np.sqrt(np.sum(vectors[2,:] ** 2))
-    alpha = np.deg2rad(angle_between(vectors[1,:], vectors[2,:]))
-    beta  = np.deg2rad(angle_between(vectors[2,:], vectors[0,:]))
-    gamma = np.deg2rad(angle_between(vectors[0,:], vectors[1,:]))
+    a = np.sqrt(np.sum(vectors[0, :] ** 2))
+    b = np.sqrt(np.sum(vectors[1, :] ** 2))
+    c = np.sqrt(np.sum(vectors[2, :] ** 2))
+    alpha = np.deg2rad(angle_between(vectors[1, :], vectors[2, :]))
+    beta  = np.deg2rad(angle_between(vectors[2, :], vectors[0, :]))
+    gamma = np.deg2rad(angle_between(vectors[0, :], vectors[1, :]))
 
     omega = a * b * c * np.sqrt(1 - np.square(np.cos(alpha)) - \
         np.square(np.cos(beta)) - np.square(np.cos(gamma)) + 2 * np.cos(alpha)\
         * np.cos(beta) * np.cos(gamma))
-    
+
     #transpose to do matrix multiplication through numpy
     direct = np.asmatrix(np.transpose(direct))
 
@@ -236,7 +236,7 @@ def direct_to_cart(direct, vectors):
                         [0, b * np.sin(gamma), (c * np.cos(alpha) -\
                           np.cos(beta) * np.cos(gamma)) / np.sin(gamma)],\
                         [0, 0, omega / (a * b * np.sin(gamma))]]))
-    
+
     xyz = np.dot(mult, direct)
 
     #transpose so is easier to parse
@@ -273,14 +273,14 @@ def determine_closest_atoms(number, defect, xyz, types):
 
     Outputs
     -------
-    array containing the distance, the cartesian coord., and 
+    array containing the distance, the cartesian coord., and
     the type of atom.
     """
     if number < 1 or len(xyz) < 2:
         #Presuming want the coordinate of the defect itself
         return [0, np.asmatrix(defect), types[0]]
     else:
-        atm_list = [[0, [0.,0.,0.], 'A'] for x in range(len(xyz))]
+        atm_list = [[0, [0., 0., 0.], 'A'] for x in range(len(xyz))]
         i = 0
         for coord in xyz:
             atm_list[i][0] = dist_between(defect, coord)
@@ -300,9 +300,9 @@ def atom_angles(defect, bonds):
     Inputs
     ------
     defect:   list containing the xyz coordinate for the defect
-    xyz   :   2-D list containing the xyz coordinates for the 
+    xyz   :   2-D list containing the xyz coordinates for the
               atoms surrounding the defect.
-    
+
     Outputs
     -------
     angles:   numpy array containing the angles for the atoms around the
@@ -342,7 +342,7 @@ def geometry_defect(number, defect, poscar):
     ------
     bonds :     numpy array containing the bondlength, coordinates, and
                 atom type of the atoms surrounding the defect atom.
-    angles:     numpy array containing the angles for the  atoms 
+    angles:     numpy array containing the angles for the  atoms
                 surrounding the defect atom.
     """
     vectors     = []
@@ -377,10 +377,10 @@ def geometry_defect(number, defect, poscar):
             if i >= 8 and i < 8 + sum(count):
                 #coordinates
                 coord.append([float(_) for _ in line.split()[0:3]])
-    
+
     assert len(types) == len(count), \
         "Unequal number atom types and atom counts in %s" %poscar
-   
+
     assert sum(count) == len(coord), "Unequal number of declard atoms (%i) and\
         coordinates (%i) in %s" %(sum(count), len(coord), poscar)
 
@@ -389,12 +389,12 @@ def geometry_defect(number, defect, poscar):
         pass
     else:
         coord = direct_to_cart(np.asarray(coord), np.asarray(vectors))
-    
+
     #List of all the atom types in it
     for i in range(len(types)):
         for j in range(int(count[i])):
             atoms.append(types[i])
-    
+
     #Determine which coord is the defect
     defect_coord = coord[atoms.index(defect)]
 
