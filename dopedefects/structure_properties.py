@@ -49,28 +49,35 @@ def coulomb(bond_length, defect):
                     np.absolute(bond_length[i][0] - bond_length[j][0]))
     return coulomb
 
-def bond_difference(pure, defected, defect_point):
-  """
-  Return the bond lengthdifference between the given cell and a pure 
-  cell.
+def bond_difference(pure, defected, defected_ang, defect_point):
+    """
+    Return the bond lengthdifference between the given cell and a pure 
+    cell.
 
-  Inputs
-  ------
-  pure          : The pure xyz coords
-  defected      : The defect bond lengths
-  defect_point  : The location of the defect
-  """
-  pure_coords = copy.copy(pure)
-  defect_location = copy.copy(defect_point)
-  defected_bonds = []
-  pure_bonds = []
-  number = len(defected)
-  types = ['x' for x in range(len(pure_coords))]
-  
-  bonds = structure_extract.determine_closest_atoms(number, \
-      defect_location, np.asarray(pure_coords), types)
-  for i, entry in enumerate(bonds):
-      defected_bonds.append(defected[i][0])
-      pure_bonds.append(bonds[i][0])
-  bond_diff = np.subtract(np.asarray(pure_bonds), np.asarray(defected_bonds))
-  return bond_diff
+    Inputs
+    ------
+    pure          : The pure xyz coords
+    defected      : The defect bond lengths
+    defected_ang  : The defect angles
+    defect_point  : The location of the defect
+    """
+    pure_coords = copy.copy(pure)
+    defect_location = copy.copy(defect_point)
+    defect_angles = np.asarray(copy.copy(defected_ang))
+    defected_bonds = []
+    pure_bonds = []
+    number = len(defected)
+    types = ['x' for x in range(len(pure_coords))]
+
+    bonds = structure_extract.determine_closest_atoms(number, \
+        defect_location, np.asarray(pure_coords), types)
+    #Bond Diff
+    for i, entry in enumerate(bonds):
+        defected_bonds.append(defected[i][0])
+        pure_bonds.append(bonds[i][0])
+    bond_diff = np.subtract(np.asarray(pure_bonds), np.asarray(defected_bonds))
+    
+    #Ang Diff
+    angles = np.asarray(structure_extract.atom_angles(defect_point, bonds))
+    angle_diff = np.subtract(angles, defect_angles)
+    return (abs(bond_diff), abs(angle_diff))
