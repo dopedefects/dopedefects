@@ -114,7 +114,14 @@ def build_pandas(data_dir, csvs):
     data["Angles"] = data["Angles"].astype(object)
     data["Coulomb"] = None
     data["Coulomb"] = data["Coulomb"].astype(object)
+    data["Bond_Difference"] = None
+    data["Bond_Difference"] = data["Bond_Difference"].astype(object)
     ##
+    for poscar in poscar_list:
+        dopant = structure_extract.impurity_type(poscar)
+        if dopant == 'pure':
+            z, pure_coord = structure_extract.geometry_defect(7, 'Cd', poscar, \
+                return_coord=True)
     for poscar in poscar_list:
         crystal = structure_extract.id_crystal(poscar)
         dopant = structure_extract.impurity_type(poscar)
@@ -132,6 +139,8 @@ dopant %s.  Please check .csv for %s" %(crystal, site, dopant, poscar))
             bonds_angles = structure_extract.geometry_defect(7, dopant, poscar)
             bonds = bonds_angles[0]
             angles = bonds_angles[1]
+            doped_site, z = structure_extract.geometry_defect(7, dopant, poscar\
+                , return_coord=True)
         except:
             print("Error (",sys.exc_info()[0], ")  determining bonds and angles\
 for crystal %s, site %s and dopant %s.  Please check POSCAR"\
@@ -141,6 +150,8 @@ for crystal %s, site %s and dopant %s.  Please check POSCAR"\
         data.at[entry, "Angles"] = angles
         data.at[entry, "Coulomb"] = structure_properties.coulomb(bonds, \
             structure_extract.geometry_defect(0, dopant, poscar)[0])
+        data.at[entry, "Bond_Difference"] = \
+            structure_properties.bond_difference(pure_coord, bonds, doped_site)
     data = clean_pandas(data)
     data = append_atomic_properties(data)
     return data

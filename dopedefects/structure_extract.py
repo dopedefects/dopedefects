@@ -325,7 +325,7 @@ def atom_angles(defect, bonds):
                     angles.append(angle_between(center1, center2))
     return angles
 
-def geometry_defect(number, defect, poscar):
+def geometry_defect(number, defect, poscar, return_coord=False):
     """
     Determine the Atom type for the closest several atoms (ratio and
     type), determine the bond lengths to the first several atoms around
@@ -398,8 +398,13 @@ def geometry_defect(number, defect, poscar):
     #Determine which coord is the defect
     defect_coord = coord[atoms.index(defect)]
 
+    #Returning for the bond differences:
+    if return_coord:
+        return (defect_coord, np.asarray(coord))
+
     #Determine bond lengths around the defect:
-    bonds = determine_closest_atoms(number, defect_coord, np.asarray(coord), atoms)
+    bonds = determine_closest_atoms(number, defect_coord, np.asarray(coord), \
+        atoms)
 
     #Determine bond angles around the defect:
     angles = atom_angles(defect_coord, bonds)
