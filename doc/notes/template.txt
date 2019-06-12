@@ -2,7 +2,7 @@ Example doc string:
 
 def fxn_name(a):
   """
-  fxn_name: computes the square of z
+  fxn_name: computes the square of a number.
 
   INPUTS
   ------

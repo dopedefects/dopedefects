@@ -159,7 +159,7 @@ for crystal %s, site %s and dopant %s.  Please check POSCAR"\
         data.at[entry, "Bond_Difference"] = bond_differences
         data.at[entry, "Angle_Difference"] = angle_differences
     data = clean_pandas(data)
-    data = append_atomic_properties(data)
+    data = append_atomic_properties(dzata)
     return data
 
 def save_pandas(data, file_name):

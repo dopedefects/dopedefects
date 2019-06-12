@@ -28,7 +28,7 @@ before_script:
 #  - "flake8 dopedefects"
 
 script:
-  - pylint --ignore="tests" dopedefects/
+#  - pylint --ignore="tests" dopedefects/
   - py.test -s --pyargs dopedefects --cov-report term-missing --cov=dopedefects --cov-config .coveragerc
 
 # generate a coverage report to send to back to user
