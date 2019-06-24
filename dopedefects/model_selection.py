@@ -15,8 +15,10 @@ def rmse_train_test(model, X_train, X_test, y_train, y_test, scalarX, scalarY):
     y_pred1 = model.predict(X_train)
     y_pred2 = model.predict(X_test)
 
-    X_train, y_train = data_preprocess.data_unscale(X_train, y_train, scalarX, scalarY)
-    X_test, y_test = data_preprocess.data_unscale(X_test, y_test, scalarX, scalarY)
+    X_train, y_train = data_preprocess.data_unscale(X_train, y_train,
+                                                    scalarX, scalarY)
+    X_test, y_test = data_preprocess.data_unscale(X_test, y_test,
+                                                    scalarX, scalarY)
     y_pred1 = scalarY.inverse_transform(y_pred1.reshape(len(y_pred1),1))
     y_pred2 = scalarY.inverse_transform(y_pred2.reshape(len(y_pred2),1))
 
