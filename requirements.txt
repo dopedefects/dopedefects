@@ -5,4 +5,5 @@ pandas
 h5py
 tables
 scikit-learn
+tensorflow
 keras
