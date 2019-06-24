@@ -4,7 +4,6 @@ import dopedefects.tests.context as context
 import numpy as np
 
 
-
 def test_resize_descriptors():
     """Test function for resizing descriptors"""
 
@@ -75,8 +74,7 @@ def test_data_unscale():
     """Does nto require testing because using sklearn inbuilt functions here"""
 
     return
-
-
+    
 
 if __name__ == '__main__':
     unittest.main()
