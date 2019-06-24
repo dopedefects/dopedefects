@@ -1,9 +1,9 @@
-numpy
+numpy==1.16.3
 scipy
 matplotlib
 pandas
 h5py
 tables
 scikit-learn
-tensorflow
-keras
+tensorflow==1.13.1
+keras==2.2.4
