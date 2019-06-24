@@ -1,27 +1,42 @@
+### this block of code is to ensure a fixed/seeded randomness
+seed_val = 100
+import os
+os.environ['PYTHONHASHSEED']=str(seed_val)
+import random
+random.seed(seed_val)
+import numpy as np
+np.random.seed(seed_val)
+import tensorflow as tf
+tf.set_random_seed(seed_val)
+from keras import backend as K
+session_conf = tf.ConfigProto(intra_op_parallelism_threads=1,
+inter_op_parallelism_threads=1)
+sess = tf.Session(graph=tf.get_default_graph(), config=session_conf)
+K.set_session(sess)
+
 from sklearn.model_selection import GridSearchCV
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import Dropout
 from keras.wrappers.scikit_learn import KerasClassifier
-from sklearn.model_selection import train_test_split
 from keras.optimizers import Adam
-
-import numpy as np
+from keras.optimizers import SGD
 
 def nn_model(X_train, y_train, num_nodes1, num_nodes2, do_rate, lr):
     """Build NN with 1 hidden layer"""
 
-    seed = 7
-    np.random.seed(seed)
-
     model = Sequential()
 
     # Hidden layers
+    np.random.seed(0)
     model.add(Dense(num_nodes1, input_dim=X_train.shape[1],
                     activation='relu'))
-    model.add(Dropout(do_rate, seed=seed))
+    np.random.seed(0)
+    model.add(Dropout(do_rate))
+    np.random.seed(0)
     model.add(Dense(num_nodes2, activation='relu'))
-    model.add(Dropout(do_rate, seed=seed))
+    np.random.seed(0)
+    model.add(Dropout(do_rate))
 
     # Output Layer
     model.add(Dense(1))

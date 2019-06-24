@@ -42,8 +42,9 @@ def iter_model(X, y, test_split, choose_opt):
             model = gpr
 
         elif choose_opt == "RF_rand":
-            reg = RandomForestRegressor(max_depth=15,
-                                    random_state=0, n_estimators=100)
+            reg = RandomForestRegressor(max_depth=15, random_state=1,
+                                        n_estimators=70, max_features=10,
+                                        min_samples_leaf=5)
             # reg = LinearRegression().fit(X_train, y_train)
             reg.fit(X_train, y_train.reshape(len(y_train)))
             np.random.seed(10)
