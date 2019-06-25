@@ -80,6 +80,8 @@ def do_feature_selection(name, data_file):
                 to predict the (-2/-3) charge transfer state
     """
 
+    #assert len(types) == len(count)
+
     CdS_df = get_data_csv(name)
 
     X = CdS_df[['Period', 'Group', 'Site', 'Delta Ion. Rad.', 'Delta At. Wt.',
@@ -502,7 +504,7 @@ def get_data_csv(name):
     Inputs
     ------
     name :      String containing the name of the csv file containing the data
-                to be analyzed (i.e. "CdTe" for CdTe.csv)
+                to be analyzed
 
     Outputs
     -------
@@ -510,7 +512,7 @@ def get_data_csv(name):
                 csv file
     """
 
-    df = pd.read_csv('./data/' + name + '.csv')
+    df = pd.read_csv(name)
 
     df = df[pd.notnull(df['(+3/+2)'])]
 
