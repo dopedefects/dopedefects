@@ -32,7 +32,7 @@ DopeDefects is able to read in a series of vasp POSCAR files and use those files
 You can execute the following ``commands`` in a bash environment to download and install this package:
 
 1. Either use git to clone the Dopedefects repository:
-  
+
   ``git clone https://github.com/dopedefects/dopedefects.git``
 
   or download and unzip the zip file:
@@ -44,8 +44,10 @@ You can execute the following ``commands`` in a bash environment to download and
 3. ``pip install -r requirements.txt``
 
 To use the package, first you will want to extract your data.  The data extraction methods are able to save the data which has been imported into a hdf5 file so it can be read back later.  To either read in the information off the file, or to generate a new file, interact with the `init_data` function of the `data_build` file.  In python:
-  ``import data_build; data_build.init_data("LOCATION/OF/DATA/FILE.hdf5", data_dir="LOCATION/OF/POSCAR/FILES", [LIST_OF_CSV_INFORMATION_FILES])
+  ``import data_build; data_build.init_data("LOCATION/OF/DATA/FILE.hdf5", data_dir="LOCATION/OF/POSCAR/FILES", [LIST_OF_CSV_INFORMATION_FILES])``
 If the data file specified already exists it will be read in as default, more details and options can be found in the docs.
+
+dopedefects/doc/notebooks folder contains plotting notebooks for examples on using the python scripts for model building and training, and generating plots
 
 ----
 
