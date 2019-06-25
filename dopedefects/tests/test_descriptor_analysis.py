@@ -10,7 +10,8 @@ import pandas as pd
 import dopedefects.tests.context as context
 
 #Variables for testing
-test_df = pd.read_csv('./test_data/test_data.csv')
+testing_dir = os.path.join(os.path.dirname(__file__), 'test_data/')
+test_df = pd.read_csv(testing_dir + '/test_data.csv')
 
 rr_out_1 = np.array([-0.41841004, -0.41841004, -0.41841004,  0.55788006, -0.28571429,
        -0.28571429, -0.28571429,  0.38095238, -0.07407407, -0.07407407,
@@ -47,13 +48,12 @@ class rf_reg(unittest.TestCase):
     """
     Test suite for the descriptor_analysis.rfe_selection function
     """
-    def test_rfe_selection(self):
-        df = pd.read_csv('./tests/test_data/test_data.csv')
-        X = df.iloc[:, 0:4].values
-        Y = df.iloc[:,5].values
+    def test_rf_selection(self):
+        X = test_df.iloc[:, 0:4].values
+        Y = test_df.iloc[:,5].values
         data_file = open('descriptor_analysis_example.dat', 'w')
 
-        Z = context.descriptor_analysis.ridge_reg(X,Y,data_file,p=False)
+        Z = context.descriptor_analysis.rf_reg(X,Y,data_file,p=False)
 
         assert np.allclose(Z, rf_out)
         return
@@ -63,9 +63,8 @@ class ridge_reg(unittest.TestCase):
     Test suite for the descriptor_analysis.ridge_reg function
     """
     def test_ridge_reg(self):
-        df = pd.read_csv('./tests/test_data/test_data.csv')
-        X = df.iloc[:, 0:4].values
-        Y = df.iloc[:,5].values
+        X = test_df.iloc[:, 0:4].values
+        Y = test_df.iloc[:,5].values
         data_file = open('descriptor_analysis_example.dat', 'w')
 
         Z1, Z2 = context.descriptor_analysis.ridge_reg(X,Y,data_file,p=False)
@@ -80,12 +79,11 @@ class lasso_reg(unittest.TestCase):
     Test suite for the descriptor_analysis.lasso_reg function
     """
     def test_lasso_reg(self):
-        df = pd.read_csv('./tests/test_data/test_data.csv')
-        X = df.iloc[:, 0:4].values
-        Y = df.iloc[:,5].values
+        X = test_df.iloc[:, 0:4].values
+        Y = test_df.iloc[:,5].values
         data_file = open('descriptor_analysis_example.dat', 'w')
 
-        Z1, Z2 = context.descriptor_analysis.ridge_reg(X,Y,data_file,p=False)
+        Z1, Z2 = context.descriptor_analysis.lasso_reg(X,Y,data_file,p=False)
 
         assert np.allclose(Z1, lasso_out_1)
         assert np.allclose(Z2, lasso_out_2)
