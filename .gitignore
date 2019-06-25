@@ -111,3 +111,4 @@ opedefects/data/*
 *.hdf5
 *.csv
 file_name
+*.swp

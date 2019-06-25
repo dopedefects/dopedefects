@@ -20,6 +20,7 @@ install:
   - pip install coveralls
   - pip install flake8
   - pip install -r requirements.txt
+  - pip install pylint
 
 # a list of commands to run before the main script
 before_script:
@@ -27,7 +28,7 @@ before_script:
 #  - "flake8 dopedefects"
 
 script:
-  - flake8 `find . -name \*.py | grep -v setup.py | grep -v version.py | grep -v __init__.py| grep -v /doc/ | grep -v /data/`
+#  - pylint --ignore="tests" dopedefects/
   - py.test -s --pyargs dopedefects --cov-report term-missing --cov=dopedefects --cov-config .coveragerc
 
 # generate a coverage report to send to back to user

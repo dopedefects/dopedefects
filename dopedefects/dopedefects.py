@@ -1,3 +1,4 @@
 def empty():
-
+    """
+    """
     return
