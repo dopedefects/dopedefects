@@ -545,7 +545,7 @@ def get_data_csv(name):
 
     return df
 
-def get_data_h5(name):
+def get_data_h5(name,key=None):
     """
     Retrieves data from hdf5 file and puts it into a pandas dataframe, then puts
     the descriptors into groups
@@ -572,7 +572,7 @@ def get_data_h5(name):
 
     cell :      contains the names of the columns of the cell descriptors
     """
-    df = pd.read_hdf(name)
+    df = pd.read_hdf(name, key)
 
     #Separate Bonds
     for i in range(7):

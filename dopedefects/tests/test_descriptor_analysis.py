@@ -46,7 +46,7 @@ class do_feature_selection(unittest.TestCase):
 
 class rf_reg(unittest.TestCase):
     """
-    Test suite for the descriptor_analysis.rfe_selection function
+    Test suite for the descriptor_analysis.rf_reg function
     """
     def test_rf_selection(self):
         X = test_df.iloc[:, 0:4].values
@@ -89,9 +89,33 @@ class lasso_reg(unittest.TestCase):
         assert np.allclose(Z2, lasso_out_2)
         return
 
-class get_data(unittest.TestCase):
+class get_data_h5(unittest.TestCase):
     """
-    Test suite for the descriptor_analysis.get_data function
+    Test suite for the descriptor_analysis.get_data_h5 function
     """
-    def test_get_data(self):
+    def test_get_data_h5(self):
+        df, el, unit, dEl, coul, dCell, cell \
+        = context.descriptor_analysis.get_data_h5(testing_dir + 'test_get_h5.hdf5', key='df')
+
+        assert len(el) == 23
+        assert len(unit) == 3
+        assert len(dEl) == 19
+        assert len(coul) == 64
+        assert len(dCell) == 28
+        assert len(cell) == 28
+        assert df.shape[0] == 10
+        assert df.shape[1] == 183
+
+        return
+
+class get_data_csv(unittest.TestCase):
+    """
+    Test suite for the descriptor_analysis.get_data_h5 function
+    """
+    def test_get_data_csv(self):
+        df = context.descriptor_analysis.get_data_csv(testing_dir + 'CdTe.csv')
+
+        assert df.shape[0] == 10
+        assert df.shape[1] == 28
+
         return
