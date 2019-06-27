@@ -54,7 +54,7 @@ class rf_reg(unittest.TestCase):
         data_file = open('descriptor_analysis_example.dat', 'w')
 
         Z = context.descriptor_analysis.rf_reg(X,Y,data_file,p=False)
-
+        print("Z: ", Z, " rf_out: ", rf_out)
         assert np.allclose(Z, rf_out)
         return
 

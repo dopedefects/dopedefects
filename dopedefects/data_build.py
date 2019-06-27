@@ -56,7 +56,7 @@ def clean_pandas(data):
         data['Angles']) & pandas.isnull(data['Coulomb']))[0]
     return data.drop(entries)
 
-def append_atomic_properties(data, file_in="Elemental_properties.csv"):
+def append_atomic_properties(data, file_in):
     """
     Append the Elemental properties from the given csv file to the
     provided pandas database
@@ -72,21 +72,25 @@ def append_atomic_properties(data, file_in="Elemental_properties.csv"):
     data    : The pandas dataframe containing the additional rows from
               file_in
     """
-    atomic_properties = pandas.read_csv(file_in)
-    for i in data.index.values:
-        atom = data.at[i, "M"]
-        try:
-            entry = atomic_properties.loc[(atomic_properties['Symbol'] == \
-                atom)].index.values[0]
-        except:
-            print("Atom '%s' not within the atomic_properties given, please \
-fill in missing values to %s, or correct input data." %(atom, file_in))
-            continue
-        for column in atomic_properties.columns.values:
-            data.at[i, column] = atomic_properties.at[entry, column]
-    return data
+    if os.path.isfile(file_name):
+        atomic_properties = pandas.read_csv(file_in)
+        for i in data.index.values:
+            atom = data.at[i, "M"]
+            try:
+                entry = atomic_properties.loc[(atomic_properties['Symbol'] == \
+                    atom)].index.values[0]
+            except:
+                print("Atom '%s' not within the atomic_properties given, please\
+ fill in missing values to %s, or correct input data." %(atom, file_in))
+                continue
+            for column in atomic_properties.columns.values:
+                data.at[i, column] = atomic_properties.at[entry, column]
+        return data
+    else:
+        raise Exception("File %s Needs to exist in order to read in additional \
+atomic properties")
 
-def build_pandas(data_dir, csvs):
+def build_pandas(data_dir, csvs, file_in):
     """
     Builds the data matrix given the list of csvs and calculates the
     structural properties and builds the pandas dataframe containing
@@ -159,7 +163,7 @@ for crystal %s, site %s and dopant %s.  Please check POSCAR"\
         data.at[entry, "Bond_Difference"] = bond_differences
         data.at[entry, "Angle_Difference"] = angle_differences
     data = clean_pandas(data)
-    data = append_atomic_properties(dzata)
+    data = append_atomic_properties(dzata, file_in)
     return data
 
 def save_pandas(data, file_name):
@@ -179,7 +183,8 @@ def save_pandas(data, file_name):
     data.to_hdf(file_name, 'data', data_columns=True)
     return
 
-def init_data(file_name, data_dir=None, csvs=None, refresh=False, dna = True):
+def init_data(file_name, data_dir=None, csvs=None, refresh=False, dna = True, \
+    file_in="Elemental_properties.csv"):
     """
     Calls the constructing functions or resumes from file to return the
     pandas dataframe containing relevant information for ML application
@@ -214,7 +219,7 @@ def init_data(file_name, data_dir=None, csvs=None, refresh=False, dna = True):
 parse into a file.")
     else:
         if data_dir and csvs:
-            data = build_pandas(data_dir, csvs)
+            data = build_pandas(data_dir, csvs, file_in)
             if dna:
                 data = data.dropna()
             save_pandas(data, file_name)

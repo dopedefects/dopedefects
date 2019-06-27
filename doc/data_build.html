@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module data_build</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>data_build</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/media/apple/Google%20Drive/CHEM%20547/dopedefects/dopedefects/data_build.py">/media/apple/Google Drive/CHEM 547/dopedefects/dopedefects/data_build.py</a></font></td></tr></table>
+    <p><tt>Construct&nbsp;the&nbsp;data&nbsp;matrix&nbsp;from&nbsp;the&nbsp;structure&nbsp;extract&nbsp;and&nbsp;structure<br>
+properties&nbsp;and&nbsp;fold&nbsp;them&nbsp;into&nbsp;the&nbsp;existing&nbsp;.csv&nbsp;files&nbsp;and&nbsp;return&nbsp;a&nbsp;data<br>
+object&nbsp;that&nbsp;can&nbsp;be&nbsp;resumed.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="h5py.html">h5py</a><br>
+<a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+<a href="pandas.html">pandas</a><br>
+</td><td width="25%" valign=top><a href="structure_extract.html">structure_extract</a><br>
+<a href="structure_properties.html">structure_properties</a><br>
+</td><td width="25%" valign=top><a href="sys.html">sys</a><br>
+<a href="tables.html">tables</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-append_atomic_properties"><strong>append_atomic_properties</strong></a>(data, file_in)</dt><dd><tt>Append&nbsp;the&nbsp;Elemental&nbsp;properties&nbsp;from&nbsp;the&nbsp;given&nbsp;csv&nbsp;file&nbsp;to&nbsp;the<br>
+provided&nbsp;pandas&nbsp;database<br>
+&nbsp;<br>
+Inputs<br>
+------<br>
+data&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;The&nbsp;pandas&nbsp;dataframe&nbsp;containing&nbsp;the&nbsp;atomic&nbsp;and&nbsp;structural<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;properteis<br>
+file_in&nbsp;:&nbsp;The&nbsp;csv&nbsp;file&nbsp;containing&nbsp;the&nbsp;extra&nbsp;columns&nbsp;to&nbsp;append<br>
+&nbsp;<br>
+Outputs<br>
+-------<br>
+data&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;The&nbsp;pandas&nbsp;dataframe&nbsp;containing&nbsp;the&nbsp;additional&nbsp;rows&nbsp;from<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file_in</tt></dd></dl>
+ <dl><dt><a name="-build_pandas"><strong>build_pandas</strong></a>(data_dir, csvs, file_in)</dt><dd><tt>Builds&nbsp;the&nbsp;data&nbsp;matrix&nbsp;given&nbsp;the&nbsp;list&nbsp;of&nbsp;csvs&nbsp;and&nbsp;calculates&nbsp;the<br>
+structural&nbsp;properties&nbsp;and&nbsp;builds&nbsp;the&nbsp;pandas&nbsp;dataframe&nbsp;containing<br>
+all&nbsp;the&nbsp;given&nbsp;information.<br>
+&nbsp;<br>
+Inputs<br>
+------<br>
+data_dir&nbsp;&nbsp;:&nbsp;The&nbsp;directory&nbsp;containing&nbsp;the&nbsp;POSCAR&nbsp;files&nbsp;for&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;structures&nbsp;of&nbsp;interest<br>
+csvs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;The&nbsp;file&nbsp;containing&nbsp;the&nbsp;csv&nbsp;files&nbsp;for&nbsp;adding&nbsp;additional<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;properties&nbsp;to&nbsp;pandas&nbsp;dataframe<br>
+&nbsp;<br>
+Outputs<br>
+-------<br>
+data&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;The&nbsp;pandas&nbsp;dataframe&nbsp;containing&nbsp;relevant&nbsp;information&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;the&nbsp;ML&nbsp;processes.</tt></dd></dl>
+ <dl><dt><a name="-clean_pandas"><strong>clean_pandas</strong></a>(data)</dt><dd><tt>Remove&nbsp;from&nbsp;consideration&nbsp;those&nbsp;locations&nbsp;in&nbsp;the&nbsp;pandas&nbsp;dataframe<br>
+where&nbsp;there&nbsp;is&nbsp;not&nbsp;a&nbsp;POSCAR&nbsp;entry<br>
+&nbsp;<br>
+Inputs<br>
+------<br>
+data&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;The&nbsp;pandas&nbsp;dataframe&nbsp;containing&nbsp;the&nbsp;atomic&nbsp;and&nbsp;structural<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;properties<br>
+&nbsp;<br>
+Outputs<br>
+-------<br>
+data&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;The&nbsp;cleaned&nbsp;pandas&nbsp;dataframe&nbsp;contining&nbsp;the&nbsp;atomic&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;structural&nbsp;properties</tt></dd></dl>
+ <dl><dt><a name="-init_data"><strong>init_data</strong></a>(file_name, data_dir=None, csvs=None, refresh=False, dna=True, file_in='Elemental_properties.csv')</dt><dd><tt>Calls&nbsp;the&nbsp;constructing&nbsp;functions&nbsp;or&nbsp;resumes&nbsp;from&nbsp;file&nbsp;to&nbsp;return&nbsp;the<br>
+pandas&nbsp;dataframe&nbsp;containing&nbsp;relevant&nbsp;information&nbsp;for&nbsp;ML&nbsp;application<br>
+&nbsp;<br>
+Inputs<br>
+------<br>
+file_name&nbsp;:&nbsp;The&nbsp;name&nbsp;for&nbsp;the&nbsp;data&nbsp;file&nbsp;to&nbsp;resume&nbsp;or&nbsp;save&nbsp;from&nbsp;or&nbsp;to<br>
+data_dir&nbsp;&nbsp;:&nbsp;The&nbsp;directory&nbsp;containing&nbsp;the&nbsp;POSCAR&nbsp;files&nbsp;of&nbsp;interest<br>
+csvs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;A&nbsp;list&nbsp;containing&nbsp;csvs&nbsp;with&nbsp;additinal&nbsp;rows&nbsp;to&nbsp;append&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;returned&nbsp;dataframe<br>
+refresh&nbsp;&nbsp;&nbsp;:&nbsp;Whether&nbsp;to&nbsp;force&nbsp;the&nbsp;generation&nbsp;of&nbsp;the&nbsp;pandas&nbsp;dataframe<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;anew&nbsp;or&nbsp;allow&nbsp;for&nbsp;the&nbsp;reading&nbsp;in&nbsp;from&nbsp;file<br>
+dna&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;Remove&nbsp;any&nbsp;rows&nbsp;from&nbsp;the&nbsp;resulting&nbsp;dataframe&nbsp;with&nbsp;N/A<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;entries&nbsp;(incomplete&nbsp;or&nbsp;non-calculated&nbsp;structures)<br>
+&nbsp;<br>
+Outputs<br>
+-------<br>
+data&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;The&nbsp;cleaned&nbsp;(if&nbsp;requested)&nbsp;pandas&nbsp;dataframe&nbsp;containing<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;structual&nbsp;and&nbsp;atomic&nbsp;properties&nbsp;for&nbsp;use&nbsp;in&nbsp;ML.</tt></dd></dl>
+ <dl><dt><a name="-init_pandas"><strong>init_pandas</strong></a>(data_dir, csvs)</dt><dd><tt>Initiate&nbsp;the&nbsp;external&nbsp;properties&nbsp;data&nbsp;frames.<br>
+&nbsp;<br>
+Inputs<br>
+------<br>
+data_dir&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;path&nbsp;to&nbsp;the&nbsp;data&nbsp;directory&nbsp;where&nbsp;the&nbsp;csvs&nbsp;are<br>
+csvs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;csv&nbsp;files&nbsp;where&nbsp;the&nbsp;extra&nbsp;properties<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;be&nbsp;read&nbsp;in&nbsp;from.<br>
+&nbsp;<br>
+Outputs<br>
+-------<br>
+data&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;pandas&nbsp;dataframe&nbsp;containing&nbsp;the&nbsp;extra&nbsp;properties<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;contained&nbsp;within&nbsp;the&nbsp;csv&nbsp;files&nbsp;passed&nbsp;into&nbsp;csvs</tt></dd></dl>
+ <dl><dt><a name="-save_pandas"><strong>save_pandas</strong></a>(data, file_name)</dt><dd><tt>Saves&nbsp;the&nbsp;given&nbsp;pandas&nbsp;dataframe&nbsp;into&nbsp;an&nbsp;hdf5&nbsp;file&nbsp;to&nbsp;resume&nbsp;when<br>
+needed<br>
+&nbsp;<br>
+Inputs<br>
+------<br>
+data&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;The&nbsp;pandas&nbsp;dataframe&nbsp;to&nbsp;save&nbsp;to&nbsp;file<br>
+file_name&nbsp;:&nbsp;The&nbsp;name&nbsp;for&nbsp;the&nbsp;saved&nbsp;file<br>
+&nbsp;<br>
+Outputs<br>
+-------<br>
+N/A</tt></dd></dl>
+</td></tr></table>
+</body></html>

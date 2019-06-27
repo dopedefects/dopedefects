@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module structure_extract</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>structure_extract</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/media/apple/Google%20Drive/CHEM%20547/dopedefects/dopedefects/structure_extract.py">/media/apple/Google Drive/CHEM 547/dopedefects/dopedefects/structure_extract.py</a></font></td></tr></table>
+    <p><tt>Helper&nbsp;functions&nbsp;to&nbsp;extract&nbsp;information&nbsp;from&nbsp;given&nbsp;POSCAR&nbsp;files</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-angle_between"><strong>angle_between</strong></a>(a, b)</dt><dd><tt>Determine&nbsp;the&nbsp;angle&nbsp;(in&nbsp;degrees)&nbsp;between&nbsp;two&nbsp;vectors<br>
+inspired&nbsp;from:&nbsp;https://stackoverflow.com/questions/2827393/angles<br>
+-between-two-n-dimensional-vectors-in-python/13849249#13849249<br>
+&nbsp;<br>
+Inputs<br>
+------<br>
+a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;numpy&nbsp;array&nbsp;1<br>
+b&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;numpy&nbsp;array&nbsp;2<br>
+&nbsp;<br>
+Outputs<br>
+-------<br>
+angle&nbsp;:&nbsp;float&nbsp;of&nbsp;the&nbsp;angle&nbsp;(in&nbsp;degrees)&nbsp;between&nbsp;a&nbsp;and&nbsp;b</tt></dd></dl>
+ <dl><dt><a name="-atom_angles"><strong>atom_angles</strong></a>(defect, bonds)</dt><dd><tt>Determine&nbsp;angles&nbsp;around&nbsp;the&nbsp;defect&nbsp;coordinate.<br>
+&nbsp;<br>
+Inputs<br>
+------<br>
+defect:&nbsp;&nbsp;&nbsp;list&nbsp;containing&nbsp;the&nbsp;xyz&nbsp;coordinate&nbsp;for&nbsp;the&nbsp;defect<br>
+xyz&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;2-D&nbsp;list&nbsp;containing&nbsp;the&nbsp;xyz&nbsp;coordinates&nbsp;for&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;atoms&nbsp;surrounding&nbsp;the&nbsp;defect.<br>
+&nbsp;<br>
+Outputs<br>
+-------<br>
+angles:&nbsp;&nbsp;&nbsp;numpy&nbsp;array&nbsp;containing&nbsp;the&nbsp;angles&nbsp;for&nbsp;the&nbsp;atoms&nbsp;around&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;defect</tt></dd></dl>
+ <dl><dt><a name="-determine_closest_atoms"><strong>determine_closest_atoms</strong></a>(number, defect, xyz, types)</dt><dd><tt>Determine&nbsp;the&nbsp;atoms&nbsp;closest&nbsp;to&nbsp;the&nbsp;defect<br>
+&nbsp;&nbsp;&nbsp;&nbsp;np.square(vectors[0,2]))<br>
+&nbsp;<br>
+Inputs<br>
+------<br>
+number&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;declaring&nbsp;how&nbsp;many&nbsp;surrounding&nbsp;atoms&nbsp;to&nbsp;use<br>
+defect&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;list&nbsp;containing&nbsp;xyz&nbsp;coords&nbsp;for&nbsp;the&nbsp;defect&nbsp;atom<br>
+xyz&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;list&nbsp;containing&nbsp;xyz&nbsp;coordinates&nbsp;for&nbsp;all&nbsp;atoms<br>
+types&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;list&nbsp;containing&nbsp;the&nbsp;atom&nbsp;types&nbsp;(in&nbsp;order&nbsp;of&nbsp;the&nbsp;coords)<br>
+&nbsp;<br>
+Outputs<br>
+-------<br>
+array&nbsp;containing&nbsp;the&nbsp;distance,&nbsp;the&nbsp;cartesian&nbsp;coord.,&nbsp;and<br>
+the&nbsp;type&nbsp;of&nbsp;atom.</tt></dd></dl>
+ <dl><dt><a name="-direct_to_cart"><strong>direct_to_cart</strong></a>(direct, vectors)</dt><dd><tt>Given&nbsp;the&nbsp;direct&nbsp;coordinates,&nbsp;transform&nbsp;into&nbsp;cartesian<br>
+&nbsp;<br>
+Inputs<br>
+------<br>
+direct&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;numpy&nbsp;matrix&nbsp;containing&nbsp;the&nbsp;direct&nbsp;coordinates<br>
+vectors&nbsp;&nbsp;&nbsp;:&nbsp;numpy&nbsp;matrix&nbsp;containing&nbsp;the&nbsp;a,&nbsp;b,&nbsp;and&nbsp;c&nbsp;unit&nbsp;cell<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vectors<br>
+&nbsp;<br>
+Outputs<br>
+-------<br>
+xyz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;numpy&nbsp;matrix&nbsp;with&nbsp;the&nbsp;xyz&nbsp;coordinates</tt></dd></dl>
+ <dl><dt><a name="-dist_between"><strong>dist_between</strong></a>(xyz1, xyz2)</dt><dd><tt>Determine&nbsp;the&nbsp;distance&nbsp;between&nbsp;two&nbsp;points&nbsp;in&nbsp;cartesian&nbsp;space<br>
+&nbsp;<br>
+Inputs<br>
+------<br>
+xyz1:&nbsp;list&nbsp;array&nbsp;of&nbsp;doubles&nbsp;containing&nbsp;the&nbsp;coordinates&nbsp;of&nbsp;the&nbsp;first&nbsp;point.<br>
+xyz2:&nbsp;list&nbsp;of&nbsp;doubles&nbsp;containing&nbsp;the&nbsp;coordinates&nbsp;of&nbsp;the&nbsp;second&nbsp;point.<br>
+&nbsp;<br>
+Outputs<br>
+-------<br>
+double&nbsp;value&nbsp;of&nbsp;the&nbsp;distance&nbsp;between&nbsp;the&nbsp;two&nbsp;points.</tt></dd></dl>
+ <dl><dt><a name="-dopant_site"><strong>dopant_site</strong></a>(poscar)</dt><dd><tt>With&nbsp;the&nbsp;given&nbsp;VASP&nbsp;POSCAR&nbsp;file,&nbsp;determine&nbsp;the&nbsp;impurity&nbsp;location<br>
+given&nbsp;the&nbsp;folder&nbsp;structure<br>
+&nbsp;<br>
+Inputs<br>
+------<br>
+poscar:&nbsp;&nbsp;File&nbsp;path&nbsp;for&nbsp;the&nbsp;relevant&nbsp;POSCAR&nbsp;file<br>
+&nbsp;<br>
+Outputs<br>
+-------<br>
+impurity&nbsp;type&nbsp;of&nbsp;the&nbsp;defect&nbsp;as&nbsp;defined&nbsp;by&nbsp;collaborators</tt></dd></dl>
+ <dl><dt><a name="-find_files"><strong>find_files</strong></a>(data_dir)</dt><dd><tt>Locates&nbsp;the&nbsp;POSCAR&nbsp;files&nbsp;within&nbsp;the&nbsp;'data_dir'<br>
+&nbsp;<br>
+Inputs<br>
+------<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data_dir:&nbsp;String&nbsp;with&nbsp;the&nbsp;top&nbsp;level&nbsp;of&nbsp;the&nbsp;directory&nbsp;to&nbsp;recurse<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;through<br>
+&nbsp;<br>
+Outputs<br>
+-------<br>
+&nbsp;&nbsp;&nbsp;&nbsp;poscar:&nbsp;&nbsp;&nbsp;List&nbsp;containing&nbsp;paths&nbsp;to&nbsp;all&nbsp;found&nbsp;VASP&nbsp;POSCAR&nbsp;files</tt></dd></dl>
+ <dl><dt><a name="-geometry_defect"><strong>geometry_defect</strong></a>(number, defect, poscar, return_coord=False)</dt><dd><tt>Determine&nbsp;the&nbsp;Atom&nbsp;type&nbsp;for&nbsp;the&nbsp;closest&nbsp;several&nbsp;atoms&nbsp;(ratio&nbsp;and<br>
+type),&nbsp;determine&nbsp;the&nbsp;bond&nbsp;lengths&nbsp;to&nbsp;the&nbsp;first&nbsp;several&nbsp;atoms&nbsp;around<br>
+the&nbsp;defect&nbsp;(return&nbsp;average),&nbsp;and&nbsp;determine&nbsp;the&nbsp;bond&nbsp;angle&nbsp;for&nbsp;the<br>
+first&nbsp;several&nbsp;atoms&nbsp;around&nbsp;the&nbsp;defect&nbsp;(return&nbsp;average).<br>
+&nbsp;<br>
+Inputs<br>
+------<br>
+defect:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output&nbsp;from&nbsp;impurity_type,&nbsp;is&nbsp;the&nbsp;defect&nbsp;type<br>
+poscar:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VASP&nbsp;POSCAR&nbsp;file&nbsp;(cart&nbsp;or&nbsp;direct)&nbsp;with&nbsp;atom&nbsp;types&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;positions.<br>
+&nbsp;<br>
+Output<br>
+------<br>
+bonds&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;numpy&nbsp;array&nbsp;containing&nbsp;the&nbsp;bondlength,&nbsp;coordinates,&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;atom&nbsp;type&nbsp;of&nbsp;the&nbsp;atoms&nbsp;surrounding&nbsp;the&nbsp;defect&nbsp;atom.<br>
+angles:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;numpy&nbsp;array&nbsp;containing&nbsp;the&nbsp;angles&nbsp;for&nbsp;the&nbsp;&nbsp;atoms<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;surrounding&nbsp;the&nbsp;defect&nbsp;atom.</tt></dd></dl>
+ <dl><dt><a name="-id_crystal"><strong>id_crystal</strong></a>(poscar)</dt><dd><tt>With&nbsp;the&nbsp;given&nbsp;poscar&nbsp;file,&nbsp;will&nbsp;attempt&nbsp;to&nbsp;identify&nbsp;which&nbsp;crystal<br>
+type&nbsp;it&nbsp;is.&nbsp;&nbsp;Has&nbsp;the&nbsp;following&nbsp;options&nbsp;for&nbsp;return:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Cd/Te<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Cd/Se<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Cd/S<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Cd&nbsp;Te/Se&nbsp;(50/50)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Cd&nbsp;Se/S&nbsp;&nbsp;(50/50)<br>
+&nbsp;<br>
+Inputs<br>
+------<br>
+poscar:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;containing&nbsp;the&nbsp;path&nbsp;for&nbsp;the&nbsp;POSCAR&nbsp;file<br>
+&nbsp;<br>
+Outputs<br>
+-------<br>
+Crystal&nbsp;type&nbsp;as&nbsp;string</tt></dd></dl>
+ <dl><dt><a name="-impurity_type"><strong>impurity_type</strong></a>(poscar)</dt><dd><tt>With&nbsp;the&nbsp;given&nbsp;VASP&nbsp;POSCAR&nbsp;file,&nbsp;determine&nbsp;defect&nbsp;type<br>
+&nbsp;<br>
+Inputs<br>
+------<br>
+poscar:&nbsp;&nbsp;&nbsp;string&nbsp;containing&nbsp;the&nbsp;path&nbsp;for&nbsp;the&nbsp;POSCAR&nbsp;file<br>
+&nbsp;<br>
+Outputs<br>
+-------<br>
+atom&nbsp;type&nbsp;of&nbsp;the&nbsp;defect</tt></dd></dl>
+ <dl><dt><a name="-unit_vector"><strong>unit_vector</strong></a>(vector)</dt><dd><tt>Returns&nbsp;unit&nbsp;vector&nbsp;of&nbsp;the&nbsp;vector.<br>
+&nbsp;<br>
+Inputs<br>
+------<br>
+vector&nbsp;:&nbsp;&nbsp;numpy&nbsp;vector&nbsp;which&nbsp;to&nbsp;return&nbsp;the&nbsp;unit&nbsp;vector&nbsp;of<br>
+&nbsp;<br>
+Outputs<br>
+-------<br>
+vector&nbsp;:&nbsp;&nbsp;numpy&nbsp;unit&nbsp;vector&nbsp;for&nbsp;input&nbsp;vector</tt></dd></dl>
+</td></tr></table>
+</body></html>

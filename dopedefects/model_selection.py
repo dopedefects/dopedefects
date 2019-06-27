@@ -6,8 +6,10 @@ from sklearn.ensemble import AdaBoostRegressor
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import MinMaxScaler
 
-import data_preprocess
-
+try:
+  import data_preprocess
+except:
+  import dopedefects.data_preprocess as data_preprocess
 
 def rmse_train_test(model, X_train, X_test, y_train, y_test, scalarX, scalarY):
     """Reports RMSE of training and testing data given trained model"""
