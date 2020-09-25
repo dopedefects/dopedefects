@@ -5,5 +5,5 @@ pandas
 h5py
 tables
 scikit-learn
-tensorflow==1.13.1
+tensorflow==1.15.4
 keras==2.2.4
